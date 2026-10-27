@@ -1,0 +1,13 @@
+# Competition data (CC BY 4.0, non-commercial use) is downloaded, never committed
+data/raw/
+data/cache/
+# Experiment outputs are large; the results table and OOF files we report are copied to results/
+outputs/
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+*.zip
+# Course handout: kept locally, not redistributed
+assignment.pdf

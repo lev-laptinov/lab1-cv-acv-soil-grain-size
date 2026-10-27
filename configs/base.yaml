@@ -1,0 +1,21 @@
+# Shared settings for every experiment. Experiment configs override keys from this file.
+seed: 42
+
+data:
+  raw_dir: data/raw
+  train_photos: data/raw/Training-All_Photos_updated/Training-All_Photos_updated
+  test_photos: data/raw/Test_All_Photos/Test_All_Photos
+  train_labels: data/raw/Training_labels_updated.csv
+  ppm_table: data/raw/ppm_updated.csv
+  sample_submission: data/raw/sample_submission.csv
+  photo_index: data/photo_index.csv
+
+cv:
+  folds_file: data/folds.csv
+  n_splits: 6
+  n_repeats: 3
+  # Strata for the folds: D50 class of the sample (fine / sand / gravel)
+  stratify_by: d50_class
+  # Groups: samples whose curves are all within this EMD of each other (complete linkage).
+  # 10 gives the same 16 families for single, complete and average linkage (stable from 10 to 12).
+  family_emd_threshold: 10

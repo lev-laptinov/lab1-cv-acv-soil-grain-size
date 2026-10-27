@@ -1,0 +1,163 @@
+path,split,sample_id,device,width,height,exif_orientation,ppm_native,stored_scale,ppm,field_w_mm,field_h_mm
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_60_fusion_H374_01.jpg,train,H374,Motorola Edge 60 Fusion,4096,2304,6,12.465,1.0,12.465,328.6,184.8
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_60_fusion_H374_02.jpg,train,H374,Motorola Edge 60 Fusion,4096,2304,3,12.465,1.0,12.465,328.6,184.8
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_60_fusion_H374_03.jpg,train,H374,Motorola Edge 60 Fusion,4096,2304,1,12.465,1.0,12.465,328.6,184.8
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_F827_01.jpg,train,F827,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_F827_02.jpg,train,F827,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_G190_01.jpg,train,G190,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_G190_02.jpg,train,G190,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H030_01.jpg,train,H030,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H030_02.jpg,train,H030,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H030_03.jpg,train,H030,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H030_04.jpg,train,H030,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H037_01.jpg,train,H037,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H037_02.jpg,train,H037,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H037_03.jpg,train,H037,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H038_01.jpg,train,H038,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H038_02.jpg,train,H038,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H038_03.jpg,train,H038,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H126_01.jpg,train,H126,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H126_02.jpg,train,H126,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H126_03.jpg,train,H126,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H181_01.jpg,train,H181,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H181_02.jpg,train,H181,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H181_03.jpg,train,H181,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H181_04.jpg,train,H181,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H183_01.jpg,train,H183,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H183_02.jpg,train,H183,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H183_03.jpg,train,H183,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H183_04.jpg,train,H183,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H366_01.jpg,train,H366,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H366_02.jpg,train,H366,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H366_03.jpg,train,H366,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H366_04.jpg,train,H366,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H367_01.jpg,train,H367,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H367_02.jpg,train,H367,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H367_03.jpg,train,H367,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H368_01.jpg,train,H368,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H368_02.jpg,train,H368,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H368_03.jpg,train,H368,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H368_04.jpg,train,H368,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H371_01.jpg,train,H371,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H371_02.jpg,train,H371,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H371_03.jpg,train,H371,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H372_01.jpg,train,H372,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H372_02.jpg,train,H372,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H372_03.jpg,train,H372,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H372_04.jpg,train,H372,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H405_01.jpg,train,H405,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H405_02.jpg,train,H405,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H405_03.jpg,train,H405,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H493_01.jpg,train,H493,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H493_02.jpg,train,H493,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H493_03.jpg,train,H493,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H516_01.jpg,train,H516,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H516_02.jpg,train,H516,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H516_03.jpg,train,H516,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H549_01.jpg,train,H549,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H549_02.jpg,train,H549,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H549_03.jpg,train,H549,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H615_01.jpg,train,H615,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H615_02.jpg,train,H615,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H616_01.jpg,train,H616,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H616_02.jpg,train,H616,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H616_03.jpg,train,H616,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H617_01.jpg,train,H617,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H617_02.jpg,train,H617,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H617_03.jpg,train,H617,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H666_01.jpg,train,H666,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H666_02.jpg,train,H666,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H666_03.jpg,train,H666,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H668_01.jpg,train,H668,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H668_02.jpg,train,H668,Motorola Edge,720,1600,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Motorola_Edge_H668_03.jpg,train,H668,Motorola Edge,1600,720,1,11.492,0.4,4.5968,348.1,156.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_F827_01.jpg,train,F827,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_F827_02.jpg,train,F827,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_F827_03.jpg,train,F827,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_G190_01.jpg,train,G190,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_G190_02.jpg,train,G190,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_G190_03.jpg,train,G190,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H030_01.jpg,train,H030,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H030_02.jpg,train,H030,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H030_03.jpg,train,H030,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H037_01.jpg,train,H037,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H037_02.jpg,train,H037,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H037_03.jpg,train,H037,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H038_01.jpg,train,H038,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H038_02.jpg,train,H038,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H038_03.jpg,train,H038,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H038_04.jpg,train,H038,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H038_05.jpg,train,H038,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H126_01.jpg,train,H126,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H181_01.jpg,train,H181,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H181_02.jpg,train,H181,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H183_01.jpg,train,H183,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H183_02.jpg,train,H183,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H183_03.jpg,train,H183,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H367_01.jpg,train,H367,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H368_01.jpg,train,H368,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H371_01.jpg,train,H371,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H371_02.jpg,train,H371,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H371_03.jpg,train,H371,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H371_04.jpg,train,H371,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H372_01.jpg,train,H372,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H372_02.jpg,train,H372,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H405_01.jpg,train,H405,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H405_02.jpg,train,H405,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H405_03.jpg,train,H405,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H493_01.jpg,train,H493,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H493_02.jpg,train,H493,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H516_01.jpg,train,H516,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H549_01.jpg,train,H549,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H549_02.jpg,train,H549,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H615_01.jpg,train,H615,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H615_02.jpg,train,H615,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H615_03.jpg,train,H615,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H616_01.jpg,train,H616,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H616_02.jpg,train,H616,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H617_01.jpg,train,H617,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H617_02.jpg,train,H617,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H617_03.jpg,train,H617,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H637_01.jpg,train,H637,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H637_02.jpg,train,H637,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H637_03.jpg,train,H637,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H666_01.jpg,train,H666,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H668_01.jpg,train,H668,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H668_02.jpg,train,H668,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H668_03.jpg,train,H668,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Training-All_Photos_updated/Training-All_Photos_updated/Samsung_A52_H668_04.jpg,train,H668,Samsung A52,1599,1200,1,26.33,0.1729,4.5525,351.2,263.6
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Audorfring (1).JPG,test,HPC_Audorfring,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Audorfring (2).JPG,test,HPC_Audorfring,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Audorfring (3).JPG,test,HPC_Audorfring,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Audorfring (4).JPG,test,HPC_Audorfring,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Audorfring (5).JPG,test,HPC_Audorfring,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+"data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_M++nster_BS6_9,0-10m (1).JPG",test,HPC_Muenster_BS6_9_0-10m,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+"data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_M++nster_BS6_9,0-10m (2).JPG",test,HPC_Muenster_BS6_9_0-10m,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+"data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_M++nster_BS6_9,0-10m (3).JPG",test,HPC_Muenster_BS6_9_0-10m,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+"data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_M++nster_BS6_9,0-10m (4).JPG",test,HPC_Muenster_BS6_9_0-10m,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+"data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_M++nster_BS6_9,0-10m (5).JPG",test,HPC_Muenster_BS6_9_0-10m,iPhone 14,4032,3024,1,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Testfeld Lidl WHV (1).JPG,test,HPC_Testfeld Lidl WHV,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Testfeld Lidl WHV (2).JPG,test,HPC_Testfeld Lidl WHV,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Testfeld Lidl WHV (3).JPG,test,HPC_Testfeld Lidl WHV,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone14_HPC_Testfeld Lidl WHV (4).JPG,test,HPC_Testfeld Lidl WHV,iPhone 14,4032,3024,6,13.942,1.0,13.942,289.2,216.9
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS10-4bis7 (2).JPG,test,HPC_Airbus BS10-4bis7,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS10-4bis7 (3).JPG,test,HPC_Airbus BS10-4bis7,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS12-5bis8 (2).JPG,test,HPC_Airbus BS12-5bis8,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS12-5bis8 (3).JPG,test,HPC_Airbus BS12-5bis8,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS12-5bis8 (4).JPG,test,HPC_Airbus BS12-5bis8,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS6-3 (2).JPG,test,HPC_Airbus BS6-3,iPhone 16,5712,4284,3,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS6-3 (3).JPG,test,HPC_Airbus BS6-3,iPhone 16,5712,4284,3,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Airbus BS6-3 (4).JPG,test,HPC_Airbus BS6-3,iPhone 16,5712,4284,3,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 18-3 (1).JPG,test,HPC_Kleinkummerfeld 18-3,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 18-3 (2).JPG,test,HPC_Kleinkummerfeld 18-3,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 18-3 (4).JPG,test,HPC_Kleinkummerfeld 18-3,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 2-2 (2).JPG,test,HPC_Kleinkummerfeld 2-2,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 2-2 (3).JPG,test,HPC_Kleinkummerfeld 2-2,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 2-2 (4).JPG,test,HPC_Kleinkummerfeld 2-2,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 2-3 (1).JPG,test,HPC_Kleinkummerfeld 2-3,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 2-3 (2).JPG,test,HPC_Kleinkummerfeld 2-3,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 2-3 (3).JPG,test,HPC_Kleinkummerfeld 2-3,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 9-4 (2).JPG,test,HPC_Kleinkummerfeld 9-4,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 9-4 (3).JPG,test,HPC_Kleinkummerfeld 9-4,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone16_HPC_Kleinkummerfeld 9-4.JPG,test,HPC_Kleinkummerfeld 9-4,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
+data/raw/Test_All_Photos/Test_All_Photos/iPhone_16_HPC_Airbus BS10-4bis7 (4).JPG,test,HPC_Airbus BS10-4bis7,iPhone 16,5712,4284,6,19.525,1.0,19.525,292.5,219.4
