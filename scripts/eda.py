@@ -13,10 +13,14 @@ from PIL import Image, ImageOps
 from soilgsd.config import load_config, resolve
 from soilgsd.data import SIEVES_MM, TARGET_COLS, load_labels, load_photo_index
 from soilgsd.folds import iter_folds
-from soilgsd.metric import d_value_errors, emd_per_sample, shift_curve
+from soilgsd.metric import d_value, d_value_errors, emd_per_sample, shift_curve
 
 OUT = resolve("reports/eda")
 CLASS_COLORS = {"fine": "#2a6fdb", "sand": "#d9a400", "gravel": "#8a5a44"}
+WORK_PPM = 4.5  # common working scale: the coarsest training photos, so nothing is upsampled
+# Mass bins between consecutive sieves (the first bin is everything below 0.002 mm), coloured by fraction.
+BIN_FRACTIONS = ["clay", "silt", "silt", "silt", "sand", "sand", "sand", "gravel", "gravel", "gravel", "cobble"]
+FRACTION_COLORS = {"clay": "#6b4f9e", "silt": "#2a6fdb", "sand": "#d9a400", "gravel": "#8a5a44", "cobble": "#555555"}
 UNIFORM = np.array([9.09, 18.18, 27.27, 36.36, 45.45, 54.55, 63.64, 72.73, 81.82, 90.91, 100.0])
 
 
@@ -80,6 +84,51 @@ def plot_full_photos(index: pd.DataFrame) -> None:
         ax.axis("off")
     fig.tight_layout()
     fig.savefig(OUT / "full_photos.png", dpi=130)
+    plt.close(fig)
+
+
+def plot_soil_grid(index: pd.DataFrame, labels: pd.DataFrame, classes: pd.Series,
+                   side_mm: float = 60, cols: int = 6) -> None:
+    """Every training sample: a side_mm crop at the working scale above its label (bin masses + curve)."""
+    y = labels[TARGET_COLS].to_numpy(float)
+    d50 = d_value(y, 50)
+    order = np.argsort(d50)
+    photos = (index[index["split"] == "train"].sort_values(["device", "path"])
+              .groupby("sample_id").head(1).set_index("sample_id"))
+    out_px = int(round(side_mm * WORK_PPM))
+    bar_px = 10 * WORK_PPM
+    rows = int(np.ceil(len(labels) / cols))
+    fig = plt.figure(figsize=(2.5 * cols, 3.9 * rows))
+    # Three grid rows per card: photo, label, spacer before the next card's title.
+    grid = fig.add_gridspec(3 * rows, cols, height_ratios=[3, 1.2, 0.55] * rows, hspace=0.12, wspace=0.12)
+    for k, i in enumerate(order):
+        r, c = divmod(k, cols)
+        sid = labels["sample_id"].iloc[i]
+        photo = photos.loc[sid]
+        ax_im = fig.add_subplot(grid[3 * r, c])
+        ax_im.imshow(physical_crop(photo["path"], photo["ppm"], side_mm, out_px))
+        ax_im.plot([8, 8 + bar_px], [out_px - 10] * 2, color="white", lw=3)
+        ax_im.text(8, out_px - 16, "10 mm", color="white", fontsize=7)
+        ax_im.set_title(f"{sid} - {classes.iloc[i]}\nD50 {d50[i]:.3g} mm, {photo['device']}", fontsize=8)
+        ax_im.axis("off")
+
+        ax_lb = fig.add_subplot(grid[3 * r + 1, c])
+        masses = np.diff(y[i], prepend=0.0)
+        ax_lb.bar(range(len(masses)), masses, color=[FRACTION_COLORS[f] for f in BIN_FRACTIONS], width=0.85)
+        ax_lb.plot(range(len(masses)), y[i], color="black", lw=1, marker=".", ms=3)
+        ax_lb.set_ylim(0, 102)
+        ax_lb.set_xlim(-0.6, len(masses) - 0.4)
+        ax_lb.set_xticks([0, 2, 5, 8, 10], ["cl", "silt", "sand", "gravel", "cb"], fontsize=6)
+        ax_lb.set_yticks([0, 50, 100], ["0", "50", "100"] if c == 0 else [], fontsize=6)
+        ax_lb.grid(axis="y", alpha=0.3)
+    handles = [plt.Rectangle((0, 0), 1, 1, color=v) for v in FRACTION_COLORS.values()]
+    names = ["clay < 0.002", "silt 0.002-0.063", "sand 0.063-2", "gravel 2-63", "cobble 63-200 mm"]
+    handles.append(plt.Line2D([], [], color="black", marker=".", lw=1))
+    names.append("% passing (label curve)")
+    fig.legend(handles, names, loc="lower center", bbox_to_anchor=(0.5, 0.9), ncol=6, frameon=False, fontsize=8)
+    fig.suptitle(f"Training samples sorted by D50: a {side_mm:.0f} mm crop at {WORK_PPM} px/mm "
+                 "and its label (bars: % mass per sieve bin)", y=0.925, fontsize=10)
+    fig.savefig(OUT / "soil_grid.png", dpi=130, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -149,6 +198,7 @@ def main() -> None:
     plot_curves(labels, classes)
     plot_scale_sheet(index)
     plot_full_photos(index)
+    plot_soil_grid(index, labels, classes)
     baselines = cv_constant_baselines(labels, folds, classes)
     scale_costs = scale_error_costs(labels)
 
