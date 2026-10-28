@@ -1,0 +1,18 @@
+# Block V: as V2 (pretrained DeiT-S), but without layer-wise LR decay.
+name: V3_deit_small_no_llrd
+approach: finetune
+backbone: deit_small_patch16_224.fb_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0]          # one repeat (6 folds): fine-tuning is ~100x the cost of a ridge run
+epochs: 8
+batch_size: 32
+opt: adamw
+lr: 2.0e-4
+weight_decay: 0.05
+warmup_epochs: 2
+bn: frozen            # BatchNorm keeps the pretrained running statistics (no BatchNorm in ConvNeXt or ViT)
+agg: mean
+layer_decay: null
+drop_path: 0.1

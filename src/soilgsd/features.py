@@ -8,7 +8,7 @@ import timm
 import torch
 
 from soilgsd.config import resolve
-from soilgsd.tiles import cut_tiles, load_photo
+from soilgsd.tiles import tile_cache
 
 
 def pick_device() -> torch.device:
@@ -19,9 +19,15 @@ def pick_device() -> torch.device:
     return torch.device("cpu")
 
 
+# Extra timm arguments per backbone. DINOv2 is published at 518 px; its position embeddings are
+# interpolated to our 224 px tiles (16 x 16 patches of 14 px).
+BACKBONE_KWARGS = {"vit_small_patch14_dinov2.lvd142m": {"img_size": 224}}
+
+
 def load_backbone(name: str, device: torch.device) -> torch.nn.Module:
     """Pretrained timm model without its classifier: the output is the pooled feature vector."""
-    return timm.create_model(name, pretrained=True, num_classes=0).eval().to(device)
+    model = timm.create_model(name, pretrained=True, num_classes=0, **BACKBONE_KWARGS.get(name, {}))
+    return model.eval().to(device)
 
 
 @torch.no_grad()
@@ -51,18 +57,9 @@ def tile_features(index: pd.DataFrame, boxes: pd.DataFrame, backbone: str, tile_
         z = np.load(path, allow_pickle=False)
         return z["feats"], pd.DataFrame({"path": z["path"], "sample_id": z["sample_id"]})
 
+    tiles, meta = tile_cache(index, boxes, tile_mm, work_ppm, split)
     device = pick_device()
-    model = load_backbone(backbone, device)
-    photos = index[index["split"] == split]
-    feats, rows = [], []
-    for i, r in photos.iterrows():
-        b = boxes.loc[i]
-        tiles = cut_tiles(load_photo(r["path"]), r["ppm"], (b["left"], b["top"], b["right"], b["bottom"]),
-                          tile_mm, work_ppm)
-        feats.append(embed(model, tiles, device))
-        rows += [(r["path"], r["sample_id"])] * len(tiles)
-    feats = np.concatenate(feats).astype(np.float32)
-    meta = pd.DataFrame(rows, columns=["path", "sample_id"])
+    feats = embed(load_backbone(backbone, device), tiles, device).astype(np.float32)
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez(path, feats=feats, path=meta["path"].to_numpy(str), sample_id=meta["sample_id"].to_numpy(str))
     return feats, meta

@@ -1,0 +1,17 @@
+# Block C: a stronger CNN (ConvNeXt-T, LayerNorm instead of BatchNorm), otherwise as C1.
+name: C4_convnext_tiny_ft
+approach: finetune
+backbone: convnext_tiny.fb_in22k_ft_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0]          # one repeat (6 folds): fine-tuning is ~100x the cost of a ridge run
+epochs: 8
+batch_size: 32
+opt: adamw
+lr: 1.0e-4
+weight_decay: 0.05
+warmup_epochs: 1
+bn: frozen            # BatchNorm keeps the pretrained running statistics (no BatchNorm in ConvNeXt or ViT)
+agg: mean
+drop_path: 0.1

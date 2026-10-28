@@ -11,3 +11,4 @@ __pycache__/
 *.zip
 # Course handout: kept locally, not redistributed
 assignment.pdf
+build/

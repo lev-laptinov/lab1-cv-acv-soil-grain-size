@@ -6,6 +6,8 @@ from PIL import Image, ImageOps
 
 from soilgsd.config import resolve
 
+TILE_PX = 224  # network input size
+
 
 def load_photo(path: str) -> Image.Image:
     """RGB photo in its displayed orientation (EXIF rotation applied)."""
@@ -75,8 +77,18 @@ def soil_boxes(index: pd.DataFrame, margin_mm: float = 5.0) -> pd.DataFrame:
     return out
 
 
+def load_soil_boxes(cfg: dict, index: pd.DataFrame) -> pd.DataFrame:
+    """Soil box of every photo (train and test), computed once and kept in data/soil_boxes.csv."""
+    path = resolve(cfg["data"]["soil_boxes"])
+    if not path.exists():
+        soil_boxes(index).to_csv(path, index=False)
+    boxes = pd.read_csv(path)
+    assert (boxes["path"] == index["path"]).all(), "soil_boxes.csv is stale: delete it and rerun"
+    return boxes
+
+
 def cut_tiles(im: Image.Image, ppm: float, box: tuple[int, int, int, int], tile_mm: float,
-              work_ppm: float, out_px: int = 224) -> np.ndarray:
+              work_ppm: float, out_px: int = TILE_PX) -> np.ndarray:
     """Tiles of tile_mm x tile_mm covering the soil box, shape (n, out_px, out_px, 3).
 
     The box is first resampled from the photo's ppm to work_ppm, so one pixel is the same number
@@ -106,3 +118,28 @@ def _starts(length: int, side: float) -> list[int]:
         return []
     n = int(np.ceil(length / side - 1e-9))
     return [int(v) for v in np.linspace(0, length - round(side), n).round()]
+
+
+def tile_cache(index: pd.DataFrame, boxes: pd.DataFrame, tile_mm: float, work_ppm: float,
+               split: str) -> tuple[np.ndarray, pd.DataFrame]:
+    """All tiles of a split as uint8 (n, 224, 224, 3) plus one row per tile (path, sample_id).
+
+    Cutting is the slow part (decoding 12-48 MP JPEGs), so it runs once per setup and the result
+    is kept in data/cache/tiles/; every model (frozen features or fine-tuning) reads the same tiles.
+    """
+    path = resolve(f"data/cache/tiles/{split}_t{tile_mm:g}_p{work_ppm:g}.npz")
+    if path.exists():
+        z = np.load(path, allow_pickle=False)
+        return z["tiles"], pd.DataFrame({"path": z["path"], "sample_id": z["sample_id"]})
+    tiles, rows = [], []
+    for i, r in index[index["split"] == split].iterrows():
+        b = boxes.loc[i]
+        t = cut_tiles(load_photo(r["path"]), r["ppm"], (b["left"], b["top"], b["right"], b["bottom"]),
+                      tile_mm, work_ppm)
+        tiles.append(t)
+        rows += [(r["path"], r["sample_id"])] * len(t)
+    tiles = np.concatenate(tiles)
+    meta = pd.DataFrame(rows, columns=["path", "sample_id"])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(path, tiles=tiles, path=meta["path"].to_numpy(str), sample_id=meta["sample_id"].to_numpy(str))
+    return tiles, meta

@@ -1,0 +1,18 @@
+# Block S: DINOv2 linear probe for 3 epochs, then full fine-tuning (LP-FT).
+name: S3_dinov2_lpft
+approach: finetune
+backbone: vit_small_patch14_dinov2.lvd142m
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0]          # one repeat (6 folds): fine-tuning is ~100x the cost of a ridge run
+epochs: 11
+batch_size: 32
+opt: adamw
+lr: 1.0e-4
+weight_decay: 0.05
+warmup_epochs: 1
+bn: frozen            # BatchNorm keeps the pretrained running statistics (no BatchNorm in ConvNeXt or ViT)
+agg: mean
+layer_decay: 0.75
+head_only_epochs: 3

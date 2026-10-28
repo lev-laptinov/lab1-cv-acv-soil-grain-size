@@ -1,0 +1,8 @@
+# Block S: frozen MAE ViT-B/16 (self-supervised) features + ridge; compare with T1.
+name: S1_mae_frozen
+backbone: vit_base_patch16_224.mae
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+alphas: [10, 100, 1000, 10000, 100000, 1000000]
+inner_splits: 4

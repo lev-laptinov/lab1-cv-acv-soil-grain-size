@@ -52,11 +52,11 @@ def choose_alpha(x: np.ndarray, meta: pd.DataFrame, y_samples: pd.DataFrame, fam
 
 def cross_validate(x: np.ndarray, meta: pd.DataFrame, labels: pd.DataFrame, folds: pd.DataFrame,
                    alphas: list[float], how: str, n_inner: int) -> pd.DataFrame:
-    """Out-of-fold sample curves for every repeat: rows (repeat, sample_id, alpha, 11 curve values)."""
+    """Out-of-fold sample curves for every repeat: rows (repeat, fold, sample_id, alpha, 11 curve values)."""
     y_samples = labels.set_index("sample_id")[TARGET_COLS].astype(float)
     families = folds.drop_duplicates("sample_id").set_index("sample_id")["family"]
     out = []
-    for (repeat, _fold), part in folds.groupby(["repeat", "fold"]):
+    for (repeat, fold), part in folds.groupby(["repeat", "fold"]):
         val_ids = set(part["sample_id"])
         is_val = meta["sample_id"].isin(val_ids).to_numpy()
         m_tr, m_va = meta[~is_val].reset_index(drop=True), meta[is_val].reset_index(drop=True)
@@ -65,6 +65,7 @@ def cross_validate(x: np.ndarray, meta: pd.DataFrame, labels: pd.DataFrame, fold
         (pred,) = fit_predict(x[~is_val], y_tr, m_tr["sample_id"], x[is_val], [alpha])
         agg = aggregate(pred, m_va, how)
         agg.insert(0, "alpha", alpha)
+        agg.insert(0, "fold", fold)
         agg.insert(0, "repeat", repeat)
         out.append(agg.reset_index())
     return pd.concat(out, ignore_index=True)
