@@ -20,6 +20,18 @@ def emd_per_sample(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     return np.abs(y_true[:, :-1] - y_pred[:, :-1]) @ LOG_WIDTHS
 
 
+def emd_parts(y_true: np.ndarray, y_pred: np.ndarray, split_mm: float = 0.2) -> tuple[np.ndarray, np.ndarray]:
+    """Per-sample EMD split at split_mm into the fine part (intervals below) and the coarse part.
+
+    The two parts add up to emd_per_sample, so each one shows where on the curve the error is.
+    """
+    y_true = np.atleast_2d(np.asarray(y_true, dtype=float))
+    y_pred = np.atleast_2d(np.asarray(y_pred, dtype=float))
+    err = np.abs(y_true[:, :-1] - y_pred[:, :-1]) * LOG_WIDTHS
+    k = int(np.searchsorted(SIEVES_MM, split_mm))
+    return err[:, :k].sum(1), err[:, k:].sum(1)
+
+
 def emd(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(emd_per_sample(y_true, y_pred).mean())
 

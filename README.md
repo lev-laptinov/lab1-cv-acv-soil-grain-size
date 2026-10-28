@@ -23,6 +23,10 @@ uv run pytest -q                          # metric tests
 | `src/soilgsd/data.py` | labels, camera table, photo index with the effective px/mm of every photo |
 | `src/soilgsd/metric.py` | competition EMD, curve repairs, D10/D50/D60 errors, scale-shift helper |
 | `src/soilgsd/folds.py` | group-aware folds: a sample's photos and a curve family's samples share a fold |
+| `src/soilgsd/tiles.py` | soil box per photo, resampling to a common px/mm, tiles of fixed size in mm |
+| `src/soilgsd/features.py` | frozen pretrained backbone, one cached feature vector per tile |
+| `src/soilgsd/tile_model.py` | ridge on tile features, tile -> photo -> sample aggregation, CV loop |
+| `configs/exp/` | one YAML per experiment, run with `scripts/run_tiles.py` |
 | `data/folds.csv` | the folds used by **every** experiment (6 folds x 3 repeats, grouped by family, stratified by D50 class) |
 | `reports/eda/` | EDA figures and `summary.md` |
 | `HYPOTHESES.md` | hypotheses log, committed before each block of experiments |
@@ -54,3 +58,29 @@ uv run pytest -q                          # metric tests
   Results are reported as mean ± std over the 18 fold scores / 3 repeats.
 
 Details: [`reports/eda/summary.md`](reports/eda/summary.md).
+
+## Tile pipeline
+
+1. **Soil box** (`soilgsd.tiles.soil_boxes`, cached in `data/soil_boxes.csv`). Rows and columns whose
+   median brightness is close to the frame centre are soil; rims, the dark side strip and the lamp
+   are not. Each camera is fixed over the tray, so every photo gets the median box of its device and
+   orientation (this overrides the few photos where a bright stone in the centre fools the detector,
+   and the box cannot depend on the soil), minus a 5 mm margin.
+2. **Common scale.** The box is resampled from the photo's own px/mm to the working scale
+   (`work_ppm`, 4.5 by default: the coarsest training photos, so nothing is upsampled).
+3. **Tiles** of `tile_mm` x `tile_mm` covering the whole box (the fewest that fit, spread evenly, so
+   neighbours overlap slightly), each resized to the 224 px network input.
+4. **Features**: a frozen pretrained backbone (`resnet50.a1_in1k` from timm), one 2048-d vector per
+   tile, cached in `data/cache/features/`.
+5. **Model**: ridge regression from standardised features to the 11-point curve; every tile carries its
+   sample's curve and every sample weighs the same. Alpha is chosen by an inner group CV on the
+   training fold only, scored with sample-level EMD.
+6. **Aggregation**: tiles -> photo (mean or median per sieve) -> sample (mean over photos) -> running
+   max, clipped to [0, 100], 100 at 200 mm.
+
+```bash
+uv run python scripts/run_tiles.py configs/exp/T1_base.yaml   # adds a row to reports/results.csv
+```
+
+Results of every experiment: [`reports/results.csv`](reports/results.csv); hypotheses and outcomes:
+[`HYPOTHESES.md`](HYPOTHESES.md).

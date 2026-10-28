@@ -5,6 +5,7 @@ from soilgsd.metric import (
     LOG_WIDTHS,
     d_value,
     emd,
+    emd_parts,
     emd_per_sample,
     is_valid_curve,
     repair_cummax,
@@ -68,3 +69,15 @@ def test_d50_log_interpolation():
     expected = 10 ** (np.log10(0.2) + 0.5 * (np.log10(0.63) - np.log10(0.2)))
     assert d_value(y, 50)[0] == pytest.approx(expected)
     assert np.isnan(d_value(np.full(11, 100.0), 10)[0])  # >10 % clay: D10 is undefined
+
+
+def test_emd_parts_add_up_and_split_at_0_2_mm():
+    rng = np.random.default_rng(0)
+    y, p = repair_cummax(rng.uniform(0, 100, (5, 11))), repair_cummax(rng.uniform(0, 100, (5, 11)))
+    fine, coarse = emd_parts(y, p)
+    np.testing.assert_allclose(fine + coarse, emd_per_sample(y, p))
+    # An error only at 0.63 mm and above lands in the coarse part.
+    q = UNIFORM.copy()
+    q[5:10] += 1
+    fine, coarse = emd_parts(UNIFORM, q)
+    assert fine[0] == 0 and coarse[0] > 0

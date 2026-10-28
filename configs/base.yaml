@@ -9,6 +9,8 @@ data:
   ppm_table: data/raw/ppm_updated.csv
   sample_submission: data/raw/sample_submission.csv
   photo_index: data/photo_index.csv
+  # Soil region of every photo (median box of its device and orientation), see soilgsd.tiles
+  soil_boxes: data/soil_boxes.csv
 
 cv:
   folds_file: data/folds.csv

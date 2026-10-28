@@ -1,0 +1,8 @@
+# Block T (HYPOTHESES.md): frozen ImageNet features + ridge; one change from T1_base per experiment.
+name: T2_tile20
+backbone: resnet50.a1_in1k
+tile_mm: 20
+work_ppm: 4.5
+agg: mean
+alphas: [10, 100, 1000, 10000, 100000, 1000000]
+inner_splits: 4
