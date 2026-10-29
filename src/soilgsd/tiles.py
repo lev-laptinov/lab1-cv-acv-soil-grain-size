@@ -77,6 +77,14 @@ def soil_boxes(index: pd.DataFrame, margin_mm: float = 5.0) -> pd.DataFrame:
     return out
 
 
+def single_photo_box(im: Image.Image, ppm: float, margin_mm: float = 5.0) -> tuple[int, int, int, int]:
+    """Soil box of a photo from an unknown setup: its own detection (no device median) minus the margin."""
+    left, top, right, bottom = detect_soil_box(im)
+    m = margin_mm * ppm
+    return (round(left * im.width + m), round(top * im.height + m),
+            round(right * im.width - m), round(bottom * im.height - m))
+
+
 def load_soil_boxes(cfg: dict, index: pd.DataFrame) -> pd.DataFrame:
     """Soil box of every photo (train and test), computed once and kept in data/soil_boxes.csv."""
     path = resolve(cfg["data"]["soil_boxes"])

@@ -84,3 +84,39 @@ uv run python scripts/run_tiles.py configs/exp/T1_base.yaml   # adds a row to re
 
 Results of every experiment: [`reports/results.csv`](reports/results.csv); hypotheses and outcomes:
 [`HYPOTHESES.md`](HYPOTHESES.md).
+
+## Fine-tuning (CNN, ViT, SSL encoders)
+
+`soilgsd.finetune` trains any timm backbone on the cached tiles: the head gives 11 logits, their
+softmax is the mass share of each sieve bin and the cumulative sum is the curve (valid by
+construction). The loss is the competition EMD; every sample is drawn equally often; augmentations
+keep millimetres per pixel (90° rotations, flips, mild colour). BatchNorm frozen or training,
+AdamW / SGD, warmup + cosine, layer-wise LR decay and LP-FT are config switches. Each run writes
+`outputs/<name>/{oof.csv, train_log.csv, config.yaml}` and a row with the compute used to
+`reports/results.csv`.
+
+```bash
+uv run python scripts/run_finetune.py configs/exp/C1_resnet18_ft.yaml --smoke 30   # speed check, no scores
+bash kaggle/bundle.sh                       # code + cached tiles -> private Kaggle dataset soilgsd-bundle
+bash kaggle/push.sh configs/exp/C1_resnet18_ft.yaml ...   # run the configs on a Kaggle GPU
+bash kaggle/push.sh "configs/exp/C1_resnet18_ft.yaml --repeats 1 2"   # add CV repeats to a finished run
+uvx kaggle kernels output <user>/soilgsd-finetune -p build/kaggle_out
+```
+
+LP-FT (`head_only_epochs`) trains the head alone, then the whole model with a fresh optimizer and
+warmup: the backbone starts the second phase with empty Adam moments, and at the peak lr its first
+steps erase the pretraining.
+
+## Submission and inference
+
+```bash
+uv run python scripts/make_submission.py configs/exp/S1_mae_frozen.yaml   # submissions/S1_mae_frozen.csv
+uv run python scripts/predict.py outputs/S1_mae_frozen/model.joblib --ppm 13.94 photo1.jpg photo2.jpg
+```
+
+`make_submission.py` refits a frozen-feature + ridge experiment on all training samples with the median
+alpha chosen inside CV; `predict.py` turns the photos of one sample and their px/mm into a curve.
+
+Pretrained weights (timm / Hugging Face): `resnet50.a1_in1k`, `resnet18.a1_in1k`,
+`convnext_tiny.fb_in22k_ft_in1k`, `deit_small_patch16_224.fb_in1k`, `vit_small_patch14_dinov2.lvd142m`,
+`vit_base_patch16_224.mae`. No other data than the competition's training photos and labels.

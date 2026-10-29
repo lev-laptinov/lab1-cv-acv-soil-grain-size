@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Push the GPU kernel that fine-tunes the given configs, e.g.
-#   bash kaggle/push.sh configs/exp/C1_resnet18_ft.yaml configs/exp/C2_resnet18_bn_train.yaml
+#   bash kaggle/push.sh configs/exp/C1_resnet18_ft.yaml "configs/exp/C2_resnet18_bn_train.yaml --repeats 1 2"
 # then, when it has finished:  uvx kaggle kernels output <user>/soilgsd-finetune -p build/kaggle_out
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -14,4 +14,4 @@ cat > "$OUT/kernel-metadata.json" <<JSON
  "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_internet": true,
  "dataset_sources": ["$USER/soilgsd-bundle"], "competition_sources": ["soil-grain-size-from-photos"]}
 JSON
-uvx kaggle kernels push -p "$OUT"
+uvx kaggle kernels push -p "$OUT" --accelerator NvidiaTeslaT4

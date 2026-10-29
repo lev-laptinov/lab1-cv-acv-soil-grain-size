@@ -37,6 +37,7 @@ def summarise(oof: pd.DataFrame, labels: pd.DataFrame, folds: pd.DataFrame) -> d
 
 def save_result(res: dict) -> None:
     """Add or replace the row of this experiment (by name) in reports/results.csv."""
+    RESULTS.parent.mkdir(parents=True, exist_ok=True)
     old = pd.read_csv(RESULTS) if RESULTS.exists() else pd.DataFrame()
     if len(old):
         old = old[old["name"] != res["name"]]

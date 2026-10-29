@@ -2,6 +2,8 @@
 
 --smoke N trains N steps on the first training fold and reports speed and memory only: it checks
 that a config runs before its hypothesis is committed, without producing any validation score.
+--repeats R ... runs only these CV repeats and merges them with the other repeats already in
+outputs/<name>/, so a run can be extended to more repeats without retraining the old ones.
 """
 
 import argparse
@@ -15,7 +17,7 @@ from soilgsd.config import load_config, resolve
 from soilgsd.data import TARGET_COLS, load_labels, load_photo_index
 from soilgsd.features import pick_device
 from soilgsd.finetune import Trainer, cross_validate, peak_memory_gb
-from soilgsd.results import save_result, summarise
+from soilgsd.results import RESULTS, save_result, summarise
 from soilgsd.tiles import load_soil_boxes, tile_cache
 
 
@@ -23,6 +25,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("exps", nargs="+", help="configs/exp/*.yaml")
     ap.add_argument("--smoke", type=int, default=0, help="train this many steps only, no validation")
+    ap.add_argument("--repeats", type=int, nargs="+", help="run these repeats, keep the others already saved")
     ap.add_argument("--config", default="configs/base.yaml")
     args = ap.parse_args()
     cfg = load_config(args.config)
@@ -51,11 +54,21 @@ def main() -> None:
                   f"~{per_fold / 60:.0f} min per fold ({exp['epochs']} epochs)")
             continue
 
+        if args.repeats:
+            exp["repeats"] = args.repeats
         start = time.time()
         oof, log = cross_validate(exp, tiles, meta, labels, folds, device, cfg["seed"])
         hours = (time.time() - start) / 3600
         out_dir = resolve(f"outputs/{exp['name']}")
         out_dir.mkdir(parents=True, exist_ok=True)
+        compute = ""
+        if args.repeats and (out_dir / "oof.csv").exists():
+            old_oof, old_log = pd.read_csv(out_dir / "oof.csv"), pd.read_csv(out_dir / "train_log.csv")
+            oof = pd.concat([old_oof[~old_oof["repeat"].isin(args.repeats)], oof], ignore_index=True)
+            log = pd.concat([old_log[~old_log["repeat"].isin(args.repeats)], log], ignore_index=True)
+            exp["repeats"] = sorted(oof["repeat"].unique().tolist())
+            old = pd.read_csv(RESULTS) if RESULTS.exists() else pd.DataFrame(columns=["name"])
+            compute = "".join(f"{c} + " for c in old.loc[old["name"] == exp["name"], "compute"])
         oof.to_csv(out_dir / "oof.csv", index=False)
         log.to_csv(out_dir / "train_log.csv", index=False)
         with open(out_dir / "config.yaml", "w") as f:
@@ -66,7 +79,7 @@ def main() -> None:
                "train_tiles": len(tiles)}
         res.update(summarise(oof, labels, folds))
         gpu = torch.cuda.get_device_name() if device.type == "cuda" else device.type
-        res["compute"] = f"{gpu} {hours:.2f} h, peak {peak_memory_gb(device):.1f} GB"
+        res["compute"] = compute + f"{gpu} {hours:.2f} h, peak {peak_memory_gb(device):.1f} GB"
         save_result(res)
         print(pd.Series(res).to_string(), "\n")
 

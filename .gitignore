@@ -1,8 +1,12 @@
 # Competition data (CC BY 4.0, non-commercial use) is downloaded, never committed
 data/raw/
 data/cache/
-# Experiment outputs are large; the results table and OOF files we report are copied to results/
-outputs/
+# Experiment outputs: OOF predictions, training logs and run configs are reported artifacts and
+# committed; fitted models are not
+outputs/*/*
+!outputs/*/oof.csv
+!outputs/*/train_log.csv
+!outputs/*/config.yaml
 .venv/
 __pycache__/
 .pytest_cache/

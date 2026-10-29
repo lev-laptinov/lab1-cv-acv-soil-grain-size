@@ -4,6 +4,7 @@ Runs the experiment configs listed in CONFIGS with scripts/run_finetune.py; outp
 reports/results.csv end up in /kaggle/working/repo and are downloaded with `kaggle kernels output`.
 """
 
+import os
 import shutil
 import subprocess
 import sys
@@ -23,10 +24,12 @@ for link, target in [(REPO / "data/raw", COMP), (REPO / "data/cache/tiles", BUND
     if not link.exists():
         link.symlink_to(target)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "timm==1.0.30"], check=True)
-env = {"PYTHONPATH": str(REPO / "src"), "PATH": "/usr/local/bin:/usr/bin:/bin"}
+# Keep Kaggle's environment (CUDA library paths); only add our package to the import path.
+env = {**os.environ, "PYTHONPATH": str(REPO / "src")}
+subprocess.run(["nvidia-smi"], check=False)
 subprocess.run([sys.executable, "-c", "import torch; print(torch.__version__, torch.cuda.get_device_name())"],
                check=True, env=env)
 # One process per config: a failing experiment does not stop the ones after it.
 for config in CONFIGS:
-    done = subprocess.run([sys.executable, "scripts/run_finetune.py", config], cwd=REPO, env=env)
+    done = subprocess.run([sys.executable, "scripts/run_finetune.py", *config.split()], cwd=REPO, env=env)
     print(f"{config}: exit code {done.returncode}", flush=True)

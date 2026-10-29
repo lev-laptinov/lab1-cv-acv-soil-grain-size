@@ -100,41 +100,50 @@ class Trainer:
         # Every sample is drawn equally often, however many photos and tiles it has.
         p = 1 / sample_ids.map(sample_ids.value_counts()).to_numpy(float)
         p /= p.sum()
-        opt = create_optimizer_v2(self.model, opt=exp["opt"], lr=exp["lr"], weight_decay=exp["weight_decay"],
-                                  layer_decay=exp.get("layer_decay"))
-        sched = CosineLRScheduler(opt, t_initial=epochs * steps, warmup_t=int(exp.get("warmup_epochs", 0) * steps),
-                                  warmup_lr_init=exp["lr"] * 0.01, lr_min=exp["lr"] * 0.01, t_in_epochs=False)
-        head_only = exp.get("head_only_epochs", 0)  # LP-FT: linear probe first, then everything
-        log, step = [], 0
-        for epoch in range(epochs):
-            frozen = epoch < head_only
+        # LP-FT: a linear probe first, then everything. Each phase gets its own optimizer and warmup:
+        # the backbone enters the second phase with empty Adam moments, so its first steps move every
+        # weight by ~lr, and at the peak lr that erases the pretraining (the first S3 run collapsed so).
+        head_only = exp.get("head_only_epochs", 0)
+        phases = [(True, head_only), (False, epochs - head_only)] if head_only else [(False, epochs)]
+        log, step, epoch = [], 0, 0
+        for frozen, phase_epochs in phases:
             for prm in self.model.backbone.parameters():
                 prm.requires_grad = not frozen
-            self.model.train()
-            if frozen:
-                self.model.backbone.eval()
-            elif exp.get("bn", "frozen") == "frozen":
-                freeze_bn_stats(self.model)
-            start, losses = time.time(), []
-            order = self.rng.choice(len(tiles), size=steps * bs, p=p)
-            for b in range(steps):
-                idx = np.sort(order[b * bs:(b + 1) * bs])
-                x = self._norm(augment(to_input(tiles[idx], self.device)))
-                y = torch.from_numpy(y_tiles[idx]).float().to(self.device)
-                with torch.autocast("cuda", dtype=torch.float16, enabled=self.amp):
-                    loss = emd_loss(self.model(x), y)
-                opt.zero_grad(set_to_none=True)
-                self.scaler.scale(loss).backward()
-                self.scaler.step(opt)
-                self.scaler.update()
-                step += 1
-                sched.step_update(step)
-                losses.append(loss.item())
-                if max_steps and step >= max_steps:
-                    return log + [{"epoch": epoch, "train_emd": np.mean(losses), "steps": len(losses),
-                                   "seconds": time.time() - start}]
-            log.append({"epoch": epoch, "train_emd": float(np.mean(losses)), "lr": opt.param_groups[-1]["lr"],
-                        "seconds": time.time() - start})
+            opt = create_optimizer_v2(self.model.head if frozen else self.model, opt=exp["opt"], lr=exp["lr"],
+                                      weight_decay=exp["weight_decay"],
+                                      layer_decay=None if frozen else exp.get("layer_decay"))
+            sched = CosineLRScheduler(opt, t_initial=phase_epochs * steps,
+                                      warmup_t=int(exp.get("warmup_epochs", 0) * steps),
+                                      warmup_lr_init=exp["lr"] * 0.01, lr_min=exp["lr"] * 0.01, t_in_epochs=False)
+            phase_step = 0
+            for _ in range(phase_epochs):
+                self.model.train()
+                if frozen:
+                    self.model.backbone.eval()
+                elif exp.get("bn", "frozen") == "frozen":
+                    freeze_bn_stats(self.model)
+                start, losses = time.time(), []
+                order = self.rng.choice(len(tiles), size=steps * bs, p=p)
+                for b in range(steps):
+                    idx = np.sort(order[b * bs:(b + 1) * bs])
+                    x = self._norm(augment(to_input(tiles[idx], self.device)))
+                    y = torch.from_numpy(y_tiles[idx]).float().to(self.device)
+                    with torch.autocast("cuda", dtype=torch.float16, enabled=self.amp):
+                        loss = emd_loss(self.model(x), y)
+                    opt.zero_grad(set_to_none=True)
+                    self.scaler.scale(loss).backward()
+                    self.scaler.step(opt)
+                    self.scaler.update()
+                    step += 1
+                    phase_step += 1
+                    sched.step_update(phase_step)
+                    losses.append(loss.item())
+                    if max_steps and step >= max_steps:
+                        return log + [{"epoch": epoch, "train_emd": np.mean(losses), "steps": len(losses),
+                                       "seconds": time.time() - start}]
+                log.append({"epoch": epoch, "train_emd": float(np.mean(losses)), "lr": opt.param_groups[-1]["lr"],
+                            "seconds": time.time() - start})
+                epoch += 1
         return log
 
     @torch.no_grad()
