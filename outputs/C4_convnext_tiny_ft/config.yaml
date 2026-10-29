@@ -1,0 +1,19 @@
+agg: mean
+approach: finetune
+backbone: convnext_tiny.fb_in22k_ft_in1k
+batch_size: 32
+bn: frozen
+drop_path: 0.1
+epochs: 8
+lr: 0.0001
+name: C4_convnext_tiny_ft
+opt: adamw
+pretrained: true
+repeats:
+- 0
+- 1
+- 2
+tile_mm: 50
+warmup_epochs: 1
+weight_decay: 0.05
+work_ppm: 4.5

@@ -1,0 +1,17 @@
+# Block C: as C1, but SGD with momentum instead of AdamW.
+# Post hoc: C3 (lr 0.01, Nesterov momentum 0.9) diverged; this lr was set after seeing that.
+name: C3b_resnet18_sgd_lr1e-3
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0, 1, 2]
+epochs: 8
+batch_size: 32
+opt: sgd
+lr: 1.0e-3
+weight_decay: 1.0e-4
+warmup_epochs: 1
+bn: frozen            # BatchNorm keeps the pretrained running statistics (no BatchNorm in ConvNeXt or ViT)
+agg: mean

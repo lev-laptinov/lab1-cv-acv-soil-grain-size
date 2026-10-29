@@ -1,0 +1,18 @@
+agg: mean
+approach: finetune
+backbone: resnet18.a1_in1k
+batch_size: 32
+bn: frozen
+epochs: 8
+lr: 0.0003
+name: C1_resnet18_ft
+opt: adamw
+pretrained: true
+repeats:
+- 0
+- 1
+- 2
+tile_mm: 50
+warmup_epochs: 1
+weight_decay: 0.05
+work_ppm: 4.5

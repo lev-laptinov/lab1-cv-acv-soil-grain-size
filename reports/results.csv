@@ -1,5 +1,19 @@
 name,backbone,tile_mm,work_ppm,agg,train_tiles,alpha_median,emd,emd_fine_part,emd_coarse_part,D50_log_err,emd_fine,emd_sand,emd_gravel,emd_std_repeats,approach,emd_std_folds,repeats,compute
-T1_base,resnet50.a1_in1k,50,4.5,mean,3458,1000.0,43.46,16.06,27.41,0.36,57.65,52.85,29.31,2.79,frozen+ridge,14.42,3.0,cpu ridge 36s (features cached)
-T2_tile20,resnet50.a1_in1k,20,4.5,mean,18944,10000.0,43.77,14.86,28.9,0.36,57.77,50.6,31.12,3.11,frozen+ridge,12.68,3.0,cpu ridge 66s (features cached)
-T3_ppm2.25,resnet50.a1_in1k,50,2.25,mean,3458,10000.0,43.21,16.17,27.05,0.35,57.93,50.23,30.02,3.14,frozen+ridge,16.1,3.0,cpu ridge 33s (features cached)
-T4_median,resnet50.a1_in1k,50,4.5,median,3458,1000.0,42.85,15.78,27.07,0.36,57.43,52.62,28.24,2.82,frozen+ridge,14.66,3.0,cpu ridge 33s (features cached)
+T1_base,resnet50.a1_in1k,50,4.5,mean,3458.0,1000.0,43.46,16.06,27.41,0.36,57.65,52.85,29.31,2.79,frozen+ridge,14.42,3.0,cpu ridge 36s (features cached)
+T2_tile20,resnet50.a1_in1k,20,4.5,mean,18944.0,10000.0,43.77,14.86,28.9,0.36,57.77,50.6,31.12,3.11,frozen+ridge,12.68,3.0,cpu ridge 66s (features cached)
+T3_ppm2.25,resnet50.a1_in1k,50,2.25,mean,3458.0,10000.0,43.21,16.17,27.05,0.35,57.93,50.23,30.02,3.14,frozen+ridge,16.1,3.0,cpu ridge 33s (features cached)
+T4_median,resnet50.a1_in1k,50,4.5,median,3458.0,1000.0,42.85,15.78,27.07,0.36,57.43,52.62,28.24,2.82,frozen+ridge,14.66,3.0,cpu ridge 33s (features cached)
+S1_dinov2_frozen,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,3458.0,1000.0,44.75,16.32,28.43,0.36,65.27,49.38,29.18,3.26,frozen+ridge,16.68,3.0,cpu ridge 4s (features cached)
+S1_mae_frozen,vit_base_patch16_224.mae,50,4.5,mean,3458.0,10000.0,38.32,14.87,23.45,0.32,49.53,47.32,26.28,2.13,frozen+ridge,14.67,3.0,cpu ridge 6s (features cached)
+C1_resnet18_ft,resnet18.a1_in1k,50,4.5,mean,3458.0,,42.85,16.95,25.9,0.38,53.63,52.41,30.77,2.56,finetune,18.22,3.0,"Tesla T4 0.06 h (fold training time; peak memory not recorded) + Tesla T4 0.11 h, peak 0.6 GB"
+C2_resnet18_bn_train,resnet18.a1_in1k,50,4.5,mean,3458.0,,42.87,16.1,26.77,0.37,51.6,55.18,30.6,2.46,finetune,16.42,3.0,"Tesla T4 0.05 h (fold training time; peak memory not recorded) + Tesla T4 0.10 h, peak 0.6 GB"
+C3_resnet18_sgd,resnet18.a1_in1k,50,4.5,mean,,,,,,1.17,,,,,finetune,25.48,1.0,Tesla T4 0.05 h (fold training time; peak memory not recorded)
+V3_deit_small_no_llrd,deit_small_patch16_224.fb_in1k,50,4.5,mean,3458.0,,46.33,18.34,27.99,0.42,63.74,54.97,30.54,3.43,finetune,18.4,3.0,"Tesla T4 0.14 h (fold training time; peak memory not recorded) + Tesla T4 0.25 h, peak 1.4 GB"
+V2_deit_small_ft,deit_small_patch16_224.fb_in1k,50,4.5,mean,3458.0,,46.16,18.63,27.53,0.42,63.09,54.86,30.64,2.83,finetune,19.15,3.0,"Tesla T4 0.14 h (fold training time; peak memory not recorded) + Tesla T4 0.25 h, peak 1.4 GB"
+S2_dinov2_ft,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,3458.0,,43.35,17.25,26.1,0.37,51.63,54.4,32.05,2.53,finetune,17.83,3.0,"Tesla T4 0.19 h (fold training time; peak memory not recorded) + Tesla T4 0.33 h, peak 1.9 GB"
+S3_dinov2_lpft,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,,,93.18,22.38,70.8,0.83,131.63,90.35,70.26,0.0,finetune,41.5,1.0,Tesla T4 0.20 h (fold training time; peak memory not recorded)
+C4_convnext_tiny_ft,convnext_tiny.fb_in22k_ft_in1k,50,4.5,mean,3458.0,,46.99,18.38,28.61,0.42,64.15,55.4,31.48,2.83,finetune,18.71,3.0,"Tesla T4 0.22 h (fold training time; peak memory not recorded) + Tesla T4 0.39 h, peak 2.4 GB"
+V1_vit_small_scratch,deit_small_patch16_224.fb_in1k,50,4.5,mean,3458.0,,37.69,14.8,22.9,0.33,39.69,49.36,30.05,1.74,finetune,15.74,3.0,"Tesla T4 0.52 h (fold training time; peak memory not recorded) + Tesla T4 0.91 h, peak 1.4 GB"
+S3b_dinov2_lpft,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,3458.0,,43.67,17.48,26.19,0.38,52.0,55.2,32.08,2.84,finetune,17.95,3.0,"Tesla T4 0.56 h, peak 1.9 GB"
+C3b_resnet18_sgd_lr1e-3,resnet18.a1_in1k,50,4.5,mean,3458.0,,47.83,17.37,30.46,0.42,51.84,59.08,39.15,7.09,finetune,24.91,3.0,"Tesla T4 0.16 h, peak 0.6 GB"
+C3c_resnet18_sgd_lr1e-4,resnet18.a1_in1k,50,4.5,mean,3458.0,,39.63,15.69,23.93,0.34,43.08,52.91,30.18,2.42,finetune,16.53,3.0,"Tesla T4 0.16 h, peak 0.6 GB"

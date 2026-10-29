@@ -1,0 +1,20 @@
+agg: mean
+approach: finetune
+backbone: deit_small_patch16_224.fb_in1k
+batch_size: 32
+bn: frozen
+drop_path: 0.1
+epochs: 30
+layer_decay: null
+lr: 0.0005
+name: V1_vit_small_scratch
+opt: adamw
+pretrained: false
+repeats:
+- 0
+- 1
+- 2
+tile_mm: 50
+warmup_epochs: 3
+weight_decay: 0.05
+work_ppm: 4.5

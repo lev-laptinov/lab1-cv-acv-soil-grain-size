@@ -1,0 +1,18 @@
+agg: mean
+approach: finetune
+backbone: vit_small_patch14_dinov2.lvd142m
+batch_size: 32
+bn: frozen
+epochs: 11
+head_only_epochs: 3
+layer_decay: 0.75
+lr: 0.0001
+name: S3_dinov2_lpft
+opt: adamw
+pretrained: true
+repeats:
+- 0
+tile_mm: 50
+warmup_epochs: 1
+weight_decay: 0.05
+work_ppm: 4.5
