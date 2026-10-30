@@ -1,0 +1,20 @@
+# Part 2: our own ViT (Lecture 1 class), ViT-Ti/16 size, trained from scratch.
+name: V4_own_vit_tiny_scratch
+backbone: own_vit
+init: scratch
+vit: {patch_size: 16, embed_dim: 192, depth: 12, num_heads: 3, global_pool: avg, pos_embed_type: learn, stem: patch}
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+repeats: [0]              # one split; add repeats 1 2 later with --repeats 1 2 if models are too close
+checkpoint_repeats: [0]   # final weights of these repeats go to W&B as model artifacts
+epochs: 30                # from scratch: more epochs and a higher lr than fine-tuning
+batch_size: 32
+lr: 5.0e-4
+weight_decay: 0.05
+layer_decay: null         # no pretrained layers to protect
+warmup_epochs: 3
+drop_path: 0.1
+loss: emd
+tta: true                 # 8 symmetries of the square at prediction time
+aug: {colour: 0.1, white_balance: 0.0, cutmix_p: 0.0, rrc_min_scale: null}
