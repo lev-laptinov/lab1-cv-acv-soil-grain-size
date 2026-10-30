@@ -141,7 +141,6 @@ def load_model(cfg_path: str, ckpt_path: str) -> CurveRegressor:
 
 
 class Tiles(Dataset):
-    """Tiles at the given indices, each with its sample's curve."""
 
     def __init__(self, tiles: np.ndarray, targets: np.ndarray, idx: np.ndarray):
         self.tiles, self.targets, self.idx = tiles, targets, idx
@@ -155,7 +154,6 @@ class Tiles(Dataset):
 
 
 def train_loader(tiles, targets, idx, sample_ids: pd.Series, batch_size: int, seed: int) -> DataLoader:
-    """Every training sample is drawn equally often."""
     weights = 1 / sample_ids.map(sample_ids.value_counts()).to_numpy(float)
     n = len(idx) // batch_size * batch_size
     sampler = WeightedRandomSampler(weights, n, replacement=True, generator=torch.Generator().manual_seed(seed))
@@ -163,7 +161,6 @@ def train_loader(tiles, targets, idx, sample_ids: pd.Series, batch_size: int, se
 
 
 def map_tiles(tiles: np.ndarray, meta: pd.DataFrame, idx: np.ndarray, k: int = 6) -> tuple[np.ndarray, list[str]]:
-    """One tile per validation sample (first k samples), for the attention maps."""
     m = meta.iloc[idx].reset_index()
     first = m.groupby("sample_id", sort=False)["path"].first()
     picks = []
