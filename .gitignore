@@ -5,6 +5,7 @@ data/cache/
 # committed; fitted models are not
 outputs/*/*
 !outputs/*/oof.csv
+!outputs/*/test_preds.csv
 !outputs/*/train_log.csv
 !outputs/*/config.yaml
 .venv/

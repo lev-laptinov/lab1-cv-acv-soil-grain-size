@@ -1,0 +1,20 @@
+# Part 2: the same ViT class at ViT-S/16 size, initialised from the AugReg ImageNet-21k checkpoint.
+name: V5_own_vit_small_augreg
+backbone: own_vit
+init: vit_small_patch16_224.augreg_in21k_ft_in1k
+vit: {patch_size: 16, embed_dim: 384, depth: 12, num_heads: 6, global_pool: token, pos_embed_type: learn, stem: patch}
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+repeats: [0]              # one split; add repeats 1 2 later with --repeats 1 2 if models are too close
+checkpoint_repeats: [0]
+epochs: 10
+batch_size: 32
+lr: 1.0e-4                # ~5e-4 * 32 / 256 scaled fine-tuning lr; V2 used 2e-4
+weight_decay: 0.05
+layer_decay: 0.75
+warmup_epochs: 1
+drop_path: 0.1
+loss: emd
+tta: true
+aug: {colour: 0.1, white_balance: 0.0, cutmix_p: 0.0, rrc_min_scale: null}

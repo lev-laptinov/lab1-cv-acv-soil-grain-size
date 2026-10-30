@@ -1,0 +1,18 @@
+# Part 2: Swin-T (window attention, 4 stages), ImageNet-22k pretrained; same recipe as V5.
+name: V6_swin_tiny
+backbone: swin_tiny_patch4_window7_224.ms_in22k_ft_in1k
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+repeats: [0]              # one split; add repeats 1 2 later with --repeats 1 2 if models are too close
+checkpoint_repeats: [0]
+epochs: 10
+batch_size: 32
+lr: 1.0e-4
+weight_decay: 0.05
+layer_decay: 0.75
+warmup_epochs: 1
+drop_path: 0.1
+loss: emd
+tta: true
+aug: {colour: 0.1, white_balance: 0.0, cutmix_p: 0.0, rrc_min_scale: null}
