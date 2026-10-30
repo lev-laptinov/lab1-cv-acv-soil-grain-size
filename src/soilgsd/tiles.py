@@ -1,5 +1,9 @@
 """Soil region, resampling to a common scale and fixed-size tiles in millimetres."""
 
+import re
+import unicodedata
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 from PIL import Image, ImageOps
@@ -9,9 +13,20 @@ from soilgsd.config import resolve
 TILE_PX = 224  # network input size
 
 
+def find_photo(path: Path) -> Path:
+    """The photo file, also when its non-ASCII letters were unpacked differently (macOS unzip: Münster -> M++nster)."""
+    if path.exists():
+        return path
+    key = lambda name: re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFC", name).lower())  # noqa: E731
+    matches = [p for p in path.parent.iterdir() if key(p.name) == key(path.name)]
+    if len(matches) != 1:
+        raise FileNotFoundError(path)
+    return matches[0]
+
+
 def load_photo(path: str) -> Image.Image:
     """RGB photo in its displayed orientation (EXIF rotation applied)."""
-    return ImageOps.exif_transpose(Image.open(resolve(path))).convert("RGB")
+    return ImageOps.exif_transpose(Image.open(find_photo(resolve(path)))).convert("RGB")
 
 
 def _soil_run(profile: np.ndarray, ref: float, low: float, high: float) -> tuple[int, int]:
