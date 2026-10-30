@@ -236,6 +236,7 @@ def main() -> None:
     oofs, logs, tests = [], [], []
     start = time.time()
     for (repeat, fold), part in folds[folds["repeat"].isin(cfg["repeats"])].groupby(["repeat", "fold"]):
+        repeat, fold = int(repeat), int(fold)  # numpy ints from groupby; torch's manual_seed rejects them
         oof, log, test = run_fold(cfg, tiles, meta, targets, labels, test_tiles, test_meta, repeat, fold,
                                   set(part["sample_id"]), args, out_dir)
         oofs.append(oof), logs.append(log), tests.append(test.reset_index().assign(repeat=repeat, fold=fold))
