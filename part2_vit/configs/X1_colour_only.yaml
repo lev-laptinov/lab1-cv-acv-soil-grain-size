@@ -1,0 +1,9 @@
+# Part 4 control: ridge on colour statistics of each tile (no grain shapes), same tiles and folds as everything else.
+#   python scripts/run_tiles.py part2_vit/configs/X1_colour_only.yaml && python scripts/make_submission.py part2_vit/configs/X1_colour_only.yaml
+name: X1_colour_only
+backbone: colour_stats
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+alphas: [0.1, 1, 10, 100, 1000, 10000]
+inner_splits: 4

@@ -1,0 +1,21 @@
+# Part 2: V5's ViT-S with AugReg weights, backbone frozen, head only, 2 epochs, minimal augmentation.
+name: V7_own_vit_small_augreg_head
+backbone: own_vit
+init: vit_small_patch16_224.augreg_in21k_ft_in1k
+vit: {patch_size: 16, embed_dim: 384, depth: 12, num_heads: 6, global_pool: token, pos_embed_type: learn, stem: patch}
+freeze_backbone: true      # only the head is trained
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+repeats: [0]              # one split; add repeats 1 2 later with --repeats 1 2 if models are too close
+checkpoint_repeats: [0]
+epochs: 2
+batch_size: 32
+lr: 1.0e-3                # only the head trains; a frozen backbone needs no small lr
+weight_decay: 0.05
+layer_decay: null
+warmup_epochs: 0
+drop_path: 0.0
+loss: emd
+tta: true
+aug: {colour: 0.0, white_balance: 0.0, cutmix_p: 0.0, rrc_min_scale: null}  # rotations and flips only

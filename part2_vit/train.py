@@ -45,6 +45,8 @@ class CurveRegressor(L.LightningModule):
         super().__init__()
         self.cfg, self.val_meta, self.test_meta, self.labels = cfg, val_meta, test_meta, labels
         self.backbone = build_backbone(cfg)
+        self.frozen = cfg.get("freeze_backbone", False)  # head-only training (linear probe with the EMD loss)
+        self.backbone.requires_grad_(not self.frozen)
         self.head = nn.Linear(self.backbone.num_features, len(TARGET_COLS))
         nn.init.zeros_(self.head.weight)
         with torch.no_grad():
@@ -69,6 +71,10 @@ class CurveRegressor(L.LightningModule):
         if self.trainer.training:
             x, y = train_augment(x, y, self.cfg.get("aug", {}))
         return (x - self.mean) / self.std, y
+
+    def on_train_epoch_start(self):
+        if self.frozen:
+            self.backbone.eval()  # no dropout / drop path in a frozen backbone
 
     def training_step(self, batch, batch_idx):
         x, y = batch
@@ -110,7 +116,9 @@ class CurveRegressor(L.LightningModule):
     def configure_optimizers(self):
         c = self.cfg
         skip = self.backbone.no_weight_decay() if hasattr(self.backbone, "no_weight_decay") else ()
-        if c.get("layer_decay"):
+        if self.frozen:
+            groups = []
+        elif c.get("layer_decay"):
             groups = param_groups_layer_decay(self.backbone, c["weight_decay"], no_weight_decay_list=skip,
                                               layer_decay=c["layer_decay"])
         else:

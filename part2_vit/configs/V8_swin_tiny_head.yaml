@@ -1,0 +1,19 @@
+# Part 2: V6's Swin-T, backbone frozen, head only, 2 epochs, minimal augmentation.
+name: V8_swin_tiny_head
+backbone: swin_tiny_patch4_window7_224.ms_in22k_ft_in1k
+freeze_backbone: true      # only the head is trained
+tile_mm: 50
+work_ppm: 4.5
+agg: mean
+repeats: [0]           
+checkpoint_repeats: [0]
+epochs: 2
+batch_size: 32
+lr: 1.0e-3                # only the head trains; a frozen backbone needs no small lr
+weight_decay: 0.05
+layer_decay: null
+warmup_epochs: 0
+drop_path: 0.0
+loss: emd
+tta: true
+aug: {colour: 0.0, white_balance: 0.0, cutmix_p: 0.0, rrc_min_scale: null}  # rotations and flips only

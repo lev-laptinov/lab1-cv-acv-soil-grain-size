@@ -43,7 +43,7 @@ def gradcam(model: torch.nn.Module, layer: torch.nn.Module, x: torch.Tensor, out
     acts = {}
     hook = layer.register_forward_hook(lambda mod, inp, out: acts.__setitem__("a", out))
     with torch.enable_grad():
-        out = model(x)
+        out = model(x.detach().requires_grad_(True))  # input grad keeps the graph when the backbone is frozen
         a = acts["a"]
         (grad,) = torch.autograd.grad(out[:, out_index].sum(), a)
     hook.remove()
@@ -86,7 +86,7 @@ def log_summary(cfg: dict, result: dict, oof: pd.DataFrame, submission: str | No
     run = wandb.init(project=PROJECT, group=cfg["name"], name=f"{cfg['name']}-summary", job_type="summary",
                      config=cfg, dir=str(SAVE_DIR), mode=_mode(enabled), reinit="finish_previous")
     run.summary.update({k: v for k, v in result.items() if isinstance(v, int | float)})
-    run.log({"oof": wandb.Table(dataframe=oof)})
+    run.log({"oof": wandb.Table(dataframe=oof.assign(model=cfg["name"]))})  # exports across runs keep the model
     if submission:
         art = wandb.Artifact(f"{cfg['name']}-submission", type="submission")
         art.add_file(submission)

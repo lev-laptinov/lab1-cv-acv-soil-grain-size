@@ -42,6 +42,20 @@ def embed(model: torch.nn.Module, tiles: np.ndarray, device: torch.device, batch
     return np.concatenate(out) if out else np.zeros((0, model.num_features), np.float32)
 
 
+def colour_stats(tiles: np.ndarray, bins: int = 8, chunk: int = 256) -> np.ndarray:
+    """Colour-only features (Part 4 control): per channel mean, std and a histogram, plus brightness mean and std.
+
+    All of them are unchanged by shuffling the pixels of a tile, so the model sees no grain shapes or sizes.
+    """
+    out = []
+    for i in range(0, len(tiles), chunk):
+        x = tiles[i:i + chunk].reshape(len(tiles[i:i + chunk]), -1, 3).astype(np.float32) / 255
+        gray = x.mean(axis=2)
+        hist = [np.stack([np.histogram(t[:, c], bins=bins, range=(0, 1))[0] for t in x]) / x.shape[1] for c in range(3)]
+        out.append(np.concatenate([x.mean(1), x.std(1), gray.mean(1, keepdims=True), gray.std(1, keepdims=True), *hist], 1))
+    return np.concatenate(out).astype(np.float32)
+
+
 def cache_path(split: str, backbone: str, tile_mm: float, work_ppm: float) -> Path:
     return resolve(f"data/cache/features/{split}_{backbone}_t{tile_mm:g}_p{work_ppm:g}.npz")
 
@@ -58,8 +72,11 @@ def tile_features(index: pd.DataFrame, boxes: pd.DataFrame, backbone: str, tile_
         return z["feats"], pd.DataFrame({"path": z["path"], "sample_id": z["sample_id"]})
 
     tiles, meta = tile_cache(index, boxes, tile_mm, work_ppm, split)
-    device = pick_device()
-    feats = embed(load_backbone(backbone, device), tiles, device).astype(np.float32)
+    if backbone == "colour_stats":
+        feats = colour_stats(tiles)
+    else:
+        device = pick_device()
+        feats = embed(load_backbone(backbone, device), tiles, device).astype(np.float32)
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez(path, feats=feats, path=meta["path"].to_numpy(str), sample_id=meta["sample_id"].to_numpy(str))
     return feats, meta
