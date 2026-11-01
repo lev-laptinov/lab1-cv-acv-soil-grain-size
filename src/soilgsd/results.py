@@ -1,5 +1,7 @@
 """Scores of one experiment from its out-of-fold predictions, and the shared results table."""
 
+import fcntl
+
 import pandas as pd
 
 from soilgsd.config import resolve
@@ -36,9 +38,15 @@ def summarise(oof: pd.DataFrame, labels: pd.DataFrame, folds: pd.DataFrame) -> d
 
 
 def save_result(res: dict) -> None:
-    """Add or replace the row of this experiment (by name) in reports/results.csv."""
+    """Add or replace the row of this experiment (by name) in reports/results.csv.
+
+    Several runs can share one GPU (one process each), so the read-modify-write holds an exclusive lock:
+    two runs finishing at once would otherwise both read the old table and one row would be lost.
+    """
     RESULTS.parent.mkdir(parents=True, exist_ok=True)
-    old = pd.read_csv(RESULTS) if RESULTS.exists() else pd.DataFrame()
-    if len(old):
-        old = old[old["name"] != res["name"]]
-    pd.concat([old, pd.DataFrame([res])], ignore_index=True).to_csv(RESULTS, index=False)
+    with open(RESULTS.with_suffix(".lock"), "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        old = pd.read_csv(RESULTS) if RESULTS.exists() else pd.DataFrame()
+        if len(old):
+            old = old[old["name"] != res["name"]]
+        pd.concat([old, pd.DataFrame([res])], ignore_index=True).to_csv(RESULTS, index=False)

@@ -110,6 +110,23 @@ def freeze_bn_stats(model: nn.Module) -> None:
             m.eval()
 
 
+def batchnorm_to_groupnorm(model: nn.Module, groups: int = 32) -> None:
+    """Replace every BatchNorm2d by a GroupNorm with the same affine parameters.
+
+    GroupNorm normalises each tile over channel groups, so it does not depend on which samples share
+    the batch. The pretrained running statistics are dropped: the first layers see differently scaled
+    features until fine-tuning adapts, which is the price of this option.
+    """
+    for name, child in model.named_children():
+        if isinstance(child, nn.BatchNorm2d):
+            gn = nn.GroupNorm(min(groups, child.num_features), child.num_features, eps=child.eps)
+            gn.weight.data.copy_(child.weight.data)
+            gn.bias.data.copy_(child.bias.data)
+            setattr(model, name, gn)
+        else:
+            batchnorm_to_groupnorm(child, groups)
+
+
 def to_input(tiles: np.ndarray, device: torch.device) -> torch.Tensor:
     return torch.from_numpy(tiles).to(device).permute(0, 3, 1, 2).float() / 255
 
@@ -122,7 +139,10 @@ class Trainer:
         self.exp, self.device = exp, device
         self.rng = np.random.default_rng(seed)
         self.model = CurveModel(exp["backbone"], exp.get("pretrained", True), exp.get("drop_path", 0.0),
-                                exp.get("weights")).to(device)
+                                exp.get("weights"))
+        if exp.get("bn") == "group":
+            batchnorm_to_groupnorm(self.model.backbone)
+        self.model.to(device)
         cfg = self.model.backbone.pretrained_cfg
         self.mean = torch.tensor(cfg["mean"], device=device).view(1, 3, 1, 1)
         self.std = torch.tensor(cfg["std"], device=device).view(1, 3, 1, 1)
@@ -173,8 +193,11 @@ class Trainer:
         phases = [(True, head_only), (False, epochs - head_only)] if head_only else [(False, epochs)]
         log, step, epoch = [], 0, 0
         for frozen, phase_epochs in phases:
-            for prm in self.model.backbone.parameters():
-                prm.requires_grad = not frozen
+            # train_layers: only backbone parameters under these name prefixes are trained (e.g. [layer4]);
+            # the rest keeps its pretrained values. The head always trains.
+            prefixes = tuple(exp.get("train_layers") or [""])
+            for name, prm in self.model.backbone.named_parameters():
+                prm.requires_grad = not frozen and name.startswith(prefixes)
             opt = create_optimizer_v2(self.model.head if frozen else self.model, opt=exp["opt"], lr=exp["lr"],
                                       weight_decay=exp["weight_decay"],
                                       layer_decay=None if frozen else exp.get("layer_decay"))

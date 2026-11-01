@@ -7,6 +7,7 @@ outputs/<name>/, so a run can be extended to more repeats without retraining the
 """
 
 import argparse
+import os
 import time
 
 import pandas as pd
@@ -80,7 +81,9 @@ def main() -> None:
                "train_tiles": len(tiles)}
         res.update(summarise(oof, labels, folds))
         gpu = torch.cuda.get_device_name() if device.type == "cuda" else device.type
-        res["compute"] = compute + f"{gpu} {hours:.2f} h, peak {peak_memory_gb(device):.1f} GB"
+        # Runs sharing one GPU (SOILGSD_PARALLEL=N): their wall-clock hours overlap and are not GPU-hours each.
+        shared = f" (GPU shared by {os.environ['SOILGSD_PARALLEL']} runs)" if os.environ.get("SOILGSD_PARALLEL") else ""
+        res["compute"] = compute + f"{gpu} {hours:.2f} h{shared}, peak {peak_memory_gb(device):.1f} GB"
         save_result(res)
         print(pd.Series(res).to_string(), "\n")
 

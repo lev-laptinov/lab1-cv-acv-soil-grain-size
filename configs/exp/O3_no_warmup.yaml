@@ -1,0 +1,18 @@
+# Block O (optimisation, ResNet-18 bag): no warmup: the cosine schedule starts at the peak lr.
+# Everything else as O0 (= B_resnet18_lr3e-4); 3 repeats, because one repeat varies by 4-6 EMD.
+name: O3_no_warmup
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0, 1, 2]
+bag_samples: 4
+bag_tiles: 16
+epochs: 8
+opt: adamw
+lr: 3.0e-4
+weight_decay: 0.05
+warmup_epochs: 0
+bn: frozen
+agg: mean

@@ -1,0 +1,17 @@
+agg: mean
+approach: finetune
+backbone: resnet18.a1_in1k
+bag_samples: 4
+bag_tiles: 16
+bn: frozen
+epochs: 8
+lr: 0.0003
+name: B_resnet18_lr3e-4
+opt: adamw
+pretrained: true
+repeats:
+- 0
+tile_mm: 50
+warmup_epochs: 1
+weight_decay: 0.05
+work_ppm: 4.5

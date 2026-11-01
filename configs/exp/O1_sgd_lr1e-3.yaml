@@ -1,0 +1,18 @@
+# Block O (optimisation, ResNet-18 bag): SGD (Nesterov momentum 0.9, timm) instead of AdamW; weight decay 1e-4 as usual for SGD.
+# Everything else as O0 (= B_resnet18_lr3e-4); 3 repeats, because one repeat varies by 4-6 EMD.
+name: O1_sgd_lr1e-3
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0, 1, 2]
+bag_samples: 4
+bag_tiles: 16
+epochs: 8
+opt: sgd
+lr: 1.0e-3
+weight_decay: 1.0e-4
+warmup_epochs: 1
+bn: frozen
+agg: mean

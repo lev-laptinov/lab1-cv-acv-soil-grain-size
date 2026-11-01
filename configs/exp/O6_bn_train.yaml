@@ -1,0 +1,18 @@
+# Block O (optimisation, ResNet-18 bag): BatchNorm normalises with batch statistics (4 samples per batch) and updates its running ones.
+# Everything else as O0 (= B_resnet18_lr3e-4); 3 repeats, because one repeat varies by 4-6 EMD.
+name: O6_bn_train
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0, 1, 2]
+bag_samples: 4
+bag_tiles: 16
+epochs: 8
+opt: adamw
+lr: 3.0e-4
+weight_decay: 0.05
+warmup_epochs: 1
+bn: train
+agg: mean

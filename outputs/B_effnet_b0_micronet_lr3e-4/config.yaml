@@ -1,0 +1,18 @@
+agg: mean
+approach: finetune
+backbone: tf_efficientnet_b0
+bag_samples: 4
+bag_tiles: 16
+bn: frozen
+epochs: 8
+lr: 0.0003
+name: B_effnet_b0_micronet_lr3e-4
+opt: adamw
+pretrained: true
+repeats:
+- 0
+tile_mm: 50
+warmup_epochs: 1
+weight_decay: 0.05
+weights: jstuckner/microscopy-efficientnet-b0-imagenet-micronet/efficientnet-b0_imagenet-micronet_weights.pth
+work_ppm: 4.5

@@ -17,3 +17,5 @@ __pycache__/
 # Course handout: kept locally, not redistributed
 assignment.pdf
 build/
+# File lock of reports/results.csv for runs sharing one GPU
+reports/results.lock

@@ -104,3 +104,32 @@ def test_hf_weights_load_by_name_or_by_position(tmp_path, monkeypatch):
         dst = CurveModel("resnet18", pretrained=False).backbone
         load_hf_weights(dst, f"user/repo/{fname}")
         assert all(torch.equal(dst.state_dict()[k], v) for k, v in sd.items())
+
+
+def _bag_data():
+    rng = np.random.default_rng(0)
+    tiles = rng.integers(0, 255, (12, 32, 32, 3), dtype=np.uint8)
+    meta = pd.DataFrame({"sample_id": list("aaaabbbbcccc"), "path": list("ppqqrrrrsstt")})
+    return tiles, meta, np.tile(np.linspace(5, 100, 11), (12, 1))
+
+
+def test_groupnorm_option_replaces_every_batchnorm_and_still_trains():
+    tiles, meta, y = _bag_data()
+    trainer = Trainer(_bag_exp(bn="group"), torch.device("cpu"), seed=0)
+    mods = list(trainer.model.modules())
+    assert not any(isinstance(m, torch.nn.BatchNorm2d) for m in mods)
+    assert any(isinstance(m, torch.nn.GroupNorm) for m in mods)
+    log = trainer.fit(tiles, y, meta["sample_id"], photo_ids=meta["path"])
+    assert np.isfinite(log[0]["train_emd"])
+    assert is_valid_curve(trainer.predict_samples(tiles, meta).to_numpy(), atol=1e-3).all()
+
+
+def test_train_layers_keeps_the_rest_of_the_backbone_fixed():
+    tiles, meta, y = _bag_data()
+    trainer = Trainer(_bag_exp(train_layers=["layer4"]), torch.device("cpu"), seed=0)
+    before = {k: v.detach().clone() for k, v in trainer.model.named_parameters()}
+    trainer.fit(tiles, y, meta["sample_id"], photo_ids=meta["path"])
+    after = dict(trainer.model.named_parameters())
+    moved = {k for k in before if not torch.equal(before[k], after[k])}
+    assert moved and all(k.startswith(("backbone.layer4.", "head.")) for k in moved)
+    assert any(k.startswith("head.") for k in moved) and any(k.startswith("backbone.layer4.") for k in moved)
