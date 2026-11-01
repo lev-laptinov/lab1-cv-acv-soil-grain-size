@@ -1,4 +1,6 @@
 import argparse
+import functools
+import time
 
 import numpy as np
 import pandas as pd
@@ -14,11 +16,24 @@ from soilgsd.data import TARGET_COLS, load_labels, load_photo_index
 from soilgsd.tiles import load_soil_boxes, tile_cache
 
 
-def checkpoint(name: str, repeat: int, fold: int, entity: str | None) -> str:
+@functools.cache
+def _api() -> wandb.Api:
+    # One connection for all downloads: a new Api() per checkpoint re-verifies the login and can time out
+    return wandb.Api(timeout=60)
+
+
+def checkpoint(name: str, repeat: int, fold: int, entity: str | None, tries: int = 3) -> str:
     path = resolve(f"outputs/{name}/checkpoints/r{repeat}_f{fold}.pt")
     if not path.exists():
         assert entity, f"{path} is missing: pass --entity to download it from W&B"
-        wandb.Api().artifact(f"{entity}/{PROJECT}/{name}-r{repeat}-f{fold}:latest").download(root=str(path.parent))
+        for attempt in range(tries):
+            try:
+                _api().artifact(f"{entity}/{PROJECT}/{name}-r{repeat}-f{fold}:latest").download(root=str(path.parent))
+                break
+            except Exception:  # W&B service busy / network hiccup: wait and retry
+                if attempt == tries - 1:
+                    raise
+                time.sleep(10 * (attempt + 1))
     return str(path)
 
 
