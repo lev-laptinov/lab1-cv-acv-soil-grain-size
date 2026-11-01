@@ -1,0 +1,18 @@
+# Block B (backbone sweep): sample-level bags, one fixed data pipeline and training recipe for every
+# backbone; only the backbone and the lr (same grid for all) change. Repeat 0 first, the best lr gets 1 and 2.
+name: B_resnet18_lr3e-4
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0]
+bag_samples: 4        # samples per step
+bag_tiles: 16         # random tiles per sample (from all its photos, each photo weighs the same)
+epochs: 8
+opt: adamw
+lr: 0.0003
+weight_decay: 0.05
+warmup_epochs: 1
+bn: frozen            # 4 samples per batch: batch statistics would describe those soils, not the data
+agg: mean

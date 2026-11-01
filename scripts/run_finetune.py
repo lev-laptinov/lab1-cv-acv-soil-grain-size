@@ -16,7 +16,7 @@ import yaml
 from soilgsd.config import load_config, resolve
 from soilgsd.data import TARGET_COLS, load_labels, load_photo_index
 from soilgsd.features import pick_device
-from soilgsd.finetune import Trainer, cross_validate, peak_memory_gb
+from soilgsd.finetune import Trainer, cross_validate, peak_memory_gb, tiles_per_step
 from soilgsd.results import RESULTS, save_result, summarise
 from soilgsd.tiles import load_soil_boxes, tile_cache
 
@@ -45,10 +45,11 @@ def main() -> None:
             y = labels.set_index("sample_id").loc[m_tr["sample_id"], TARGET_COLS].to_numpy(float)
             trainer = Trainer(exp, device, cfg["seed"])
             start = time.time()
-            log = trainer.fit(tiles[keep], y, m_tr["sample_id"], max_steps=args.smoke)
+            log = trainer.fit(tiles[keep], y, m_tr["sample_id"], max_steps=args.smoke, photo_ids=m_tr["path"])
             sec = time.time() - start
-            n = args.smoke * exp["batch_size"]
-            per_fold = sec / n * (keep.sum() // exp["batch_size"] * exp["batch_size"]) * exp["epochs"]
+            bs = tiles_per_step(exp)
+            n = args.smoke * bs
+            per_fold = sec / n * (keep.sum() // bs * bs) * exp["epochs"]
             print(f"{exp['name']} on {device}: {n / sec:.0f} tiles/s, train EMD after {args.smoke} steps "
                   f"{log[-1]['train_emd']:.1f}, peak memory {peak_memory_gb(device):.1f} GB, "
                   f"~{per_fold / 60:.0f} min per fold ({exp['epochs']} epochs)")

@@ -41,3 +41,66 @@ def test_lpft_trains_head_first_then_the_whole_model():
     assert [row["epoch"] for row in log] == [0, 1]
     moved = [not torch.equal(a, b) for a, b in zip(start, trainer.model.backbone.parameters(), strict=True)]
     assert any(moved), "the backbone never trained after the linear-probe phase"
+
+
+def _bag_exp(**kw):
+    return {"backbone": "resnet18", "pretrained": False, "bag_samples": 2, "bag_tiles": 3, "epochs": 1,
+            "opt": "adamw", "lr": 1e-3, "weight_decay": 0.0, "warmup_epochs": 0, **kw}
+
+
+def test_bag_batch_takes_whole_bags_of_one_sample_each():
+    sample_ids = pd.Series(["a"] * 6 + ["b"] * 4 + ["c"] * 8)
+    photo_ids = pd.Series(["a1"] * 5 + ["a2"] + ["b1"] * 4 + ["c1"] * 4 + ["c2"] * 4)
+    y = np.repeat(np.linspace(0, 100, 3)[:, None], 11, axis=1)[[0] * 6 + [1] * 4 + [2] * 8]
+    trainer = Trainer(_bag_exp(), torch.device("cpu"), seed=0)
+    bags = trainer._bags(sample_ids, photo_ids)
+    # Each photo of a sample weighs the same: the single a2 tile is as likely as all five a1 tiles together.
+    ix, w = bags["a"]
+    assert np.isclose(w[ix == 5].sum(), 0.5)
+    idx, yb = trainer._bag_batch(bags, y)
+    assert idx.shape == (6,) and yb.shape == (2, 11)
+    for bag, label in zip(idx.reshape(2, 3), yb, strict=True):
+        assert sample_ids[bag].nunique() == 1 and len(set(bag)) == 3
+        assert np.array_equal(y[bag[0]], label)
+
+
+def test_bag_model_trains_and_predicts_one_valid_curve_per_sample():
+    rng = np.random.default_rng(0)
+    tiles = rng.integers(0, 255, (12, 32, 32, 3), dtype=np.uint8)
+    meta = pd.DataFrame({"sample_id": list("aaaabbbbcccc"), "path": list("ppqqrrrrsstt")})
+    y = np.tile(np.linspace(5, 100, 11), (12, 1))
+    trainer = Trainer(_bag_exp(), torch.device("cpu"), seed=0)
+    log = trainer.fit(tiles, y, meta["sample_id"], photo_ids=meta["path"])
+    assert len(log) == 1 and np.isfinite(log[0]["train_emd"])
+    pred = trainer.predict_samples(tiles, meta)
+    assert list(pred.index) == ["a", "b", "c"]
+    assert is_valid_curve(pred.to_numpy(), atol=1e-3).all()
+
+
+def test_forward_bags_pools_features_not_curves():
+    model = CurveModel("resnet18", pretrained=False).eval()
+    x = torch.randn(6, 3, 32, 32)
+    with torch.no_grad():
+        pooled = model.forward_bags(x, 3)
+        manual = model.curve(model.backbone(x).view(2, 3, -1).mean(1))
+    assert torch.allclose(pooled, manual, atol=1e-5)
+
+
+def test_hf_weights_load_by_name_or_by_position(tmp_path, monkeypatch):
+    import huggingface_hub
+
+    from soilgsd.finetune import load_hf_weights
+
+    src = CurveModel("resnet18", pretrained=False).backbone
+    sd = {k: v for k, v in src.state_dict().items() if not k.endswith("num_batches_tracked")}
+    by_name = tmp_path / "a.pth"
+    torch.save({**sd, "fc.weight": torch.zeros(3, 512)}, by_name)
+    # Same tensors in the same order under foreign names (as efficientnet_pytorch files store them)
+    by_pos = tmp_path / "b.pth"
+    torch.save({f"_x{i}": v for i, v in enumerate(sd.values())}, by_pos)
+    files = {"a.pth": by_name, "b.pth": by_pos}
+    monkeypatch.setattr(huggingface_hub, "hf_hub_download", lambda repo, fname: str(files[fname]))
+    for fname in files:
+        dst = CurveModel("resnet18", pretrained=False).backbone
+        load_hf_weights(dst, f"user/repo/{fname}")
+        assert all(torch.equal(dst.state_dict()[k], v) for k, v in sd.items())

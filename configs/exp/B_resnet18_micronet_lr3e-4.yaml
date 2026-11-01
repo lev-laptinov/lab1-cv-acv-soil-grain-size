@@ -1,0 +1,20 @@
+# Block B (backbone sweep), as the other B_* configs; only the pretraining differs: MicroNet (NASA, Stuckner
+# et al. 2022), ImageNet weights trained further on ~100k labelled micrographs of materials (no soil).
+# Hugging Face: jstuckner/microscopy-resnet18-imagenet-micronet (MIT), loaded with weights_only=True.
+name: B_resnet18_micronet_lr3e-4
+approach: finetune
+backbone: resnet18
+weights: jstuckner/microscopy-resnet18-imagenet-micronet/resnet18_imagenet-micronet_weights.pth
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0]
+bag_samples: 4        # samples per step
+bag_tiles: 16         # random tiles per sample (from all its photos, each photo weighs the same)
+epochs: 8
+opt: adamw
+lr: 0.0003
+weight_decay: 0.05
+warmup_epochs: 1
+bn: frozen            # 4 samples per batch: batch statistics would describe those soils, not the data
+agg: mean
