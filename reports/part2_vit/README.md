@@ -14,7 +14,10 @@ experiment in the repository; code in [`part2_vit/`](../../part2_vit/).
   falling, validation EMD stops improving after the first epoch).
 - Every model fails the same way: **fine soils and sand are confused in both directions**. Silt and clay are
   smaller than a pixel (0.22 mm), and oven-dried fine soils form sand-sized clumps.
-- Taking the colour away barely changes the fine-soil error (−1 to +4 EMD): **colour is not the main shortcut**.
+- **Colour alone gets surprisingly far:** a model that sees only colour statistics, no grain shapes, scores 42.6,
+  as good as the fine-tuned transformers; the best model adds about 4 EMD over it. Taking colour away from the
+  trained models barely changes their fine-soil error, except for the scratch ViT-Ti (+7.5), which leans on
+  colour for fine soils.
 - All models clearly beat image-free baselines on the test photos (best 65.6 vs 102.4 for the mean curve), but
   keep only about two thirds of their CV advantage there.
 
@@ -135,6 +138,7 @@ CV on one split (6 folds, 24 soils); public LB = 3 of the 10 test soils.
 | V6 Swin-T, fine-tuned | 43.4 | 18.8 | 63.4 | 53.9 | 25.0 | 17.7 | 25.8 | 81.1 |
 | **V7 ViT-S AugReg, head only** | 39.8 | 14.8 | 46.1 | 46.1 | 32.3 | 15.1 | 24.6 | **65.6** |
 | **V8 Swin-T, head only** | **38.5** | 16.4 | 46.1 | 49.8 | 27.4 | 15.6 | 22.9 | 72.4 |
+| X1 colour statistics only + ridge (control, 5.2) | 42.6 | 14.5 | 55.5 | 47.6 | 31.7 | 14.3 | 28.4 | – |
 | B0 mean training curve (no photo) | 90.2 | | 108.5 | 69.5 | 88.3 | | | 102.4 |
 | B1 median training curve | 98.6 | | 128.9 | 81.6 | 81.8 | | | 90.3 |
 | B2 random training curve | 103.1 | | 125.0 | 100.1 | 114.0 | | | – |
@@ -215,33 +219,62 @@ brown). Every model confuses fine soils with sand, so the question is whether co
 
 **The test.** A shortcut can be checked in two directions:
 
-| Question | Test | Status |
-|---|---|---|
-| Does the model *need* colour? | Take colour away from the input of the trained models and see how much worse they get | done for V6, V7, V8 |
+| Question | Test |
+|---|---|
+| Does the model *need* colour? | Take colour away from the input of the trained models and see how much worse they get |
+| Is colour *enough*? | Train a model that sees *only* colour and see how good it gets |
 
-For the first test, each fold model predicted the soils it never saw twice: once as photographed, once with
-colour removed. "Removed" means every tile's per-channel mean and standard deviation are set to the average of
-the training tiles. Grain shapes, edges and texture stay; colour cast, brightness and contrast go. Script:
-[`part2_vit/colour_test.py`](../../part2_vit/colour_test.py).
-
+**Test 1: take colour away.** Each fold model predicted the soils it never saw twice: once as photographed,
+once with colour removed. "Removed" means every tile's per-channel mean and standard deviation are set to the
+average of the training tiles. Grain shapes, edges and texture stay; colour cast, brightness and contrast go.
+Script: [`part2_vit/colour_test.py`](../../part2_vit/colour_test.py). If a model relies on colour, its error
+rises sharply without it, most of all on fine soils.
 
 | Model | EMD as photographed | EMD without colour | Change | Fine soils | Sand | Gravel | Mean predicted fines % |
 |---|---|---|---|---|---|---|---|
+| V4 ViT-Ti scratch | 39.3 | 41.1 | +1.8 | **+7.5** | −6.4 | +2.7 | 28.4 → 24.5 |
+| V5 ViT-S fine-tuned | 43.1 | 42.6 | −0.5 | +1.8 | −4.4 | +0.3 | 26.1 → 26.9 |
 | V6 Swin-T fine-tuned | 43.4 | 41.8 | −1.6 | −1.2 | −6.3 | +0.7 | 26.5 → 28.4 |
 | V7 ViT-S head only | 39.8 | 42.3 | +2.5 | +4.2 | −0.2 | +2.9 | 28.6 → 30.3 |
 | V8 Swin-T head only | 38.5 | 43.6 | +5.1 | +1.4 | +2.1 | +9.2 | 28.5 → 30.3 |
 
-V4 and V5 not run yet².
+**Test 2: colour only.** A ridge regression on colour statistics of each tile, with no spatial information at
+all: per-channel mean, standard deviation and an 8-bin histogram, plus mean and standard deviation of
+brightness. All of these stay the same if the pixels of a tile are shuffled, so the model sees no grain shapes or
+sizes. Same tiles, folds and averaging as every other model
+([`X1_colour_only.yaml`](../../part2_vit/configs/X1_colour_only.yaml)).
+
+| Same split (repeat 0) | CV EMD | Fine soils | Sand | Gravel |
+|---|---|---|---|---|
+| Colour statistics only (X1) | 42.6 | 55.5 | 47.6 | 31.7 |
+| Best transformer (V8 head only) | 38.5 | 46.1 | 49.8 | 27.4 |
+| Fine-tuned transformers (V5, V6) | 43.1–43.4 | 61.0–63.4 | 53.9–55.2 | 25.0–25.1 |
+| Mean training curve, no photo (B0) | 90.2 | 108.5 | 69.5 | 88.3 |
 
 **What it shows.**
 
-- **No colour shortcut for fine soils.** Their error changes by −1.2 to +4.2 EMD, small next to the 46–63 EMD
-  these models make on fine soils, so the fine ↔ sand confusion does not come from colour. Without colour the
-  models still predict about the same fines share (+2 percentage points on average).
-- **Gravel loses most, for V8 (+9 EMD).** The normalisation also equalises each tile's contrast, and a stone
-  against a fine matrix is largely a brightness-contrast cue. This is a loss of contrast more than of colour.
-- **The fine-tuned Swin is *better* on sand without colour (−6 EMD).** Fine-tuning taught it a colour cue that
-  misleads it on sandy soils, which fits the memorisation seen in its training curves.
+- **Colour carries most of the signal the models use.** Colour and brightness statistics alone get from 90.2
+  (no photo) to 42.6, and the best transformer adds only about 4 EMD on top of that. The fully fine-tuned ViT-S
+  and Swin-T do *not* beat the colour-only model at all (43.1 and 43.4).
+- **The scratch ViT-Ti leans on colour for fine soils.** Without colour its fine-soil error rises by 7.5 EMD and it
+  predicts 4 percentage points less fines. Part of its advantage on fine soils (45.0, the best of all models)
+  comes from colour, which is exactly the cue at risk on the grey iPhone test photos.
+- **The other models do not need colour.** Their fine-soil error changes by −1.2 to +4.2. So the fine ↔ sand
+  confusion is not caused by colour: it happens with and without it.
+- **Colour misleads the end-to-end models on sand.** V4, V5 and V6 all get *better* on sand without colour
+  (−4.4 to −6.4 EMD), and the colour-only model is also better on sand (47.6) than they are (53.5–55.2).
+  Training all weights taught them a colour cue that does not hold for sandy soils, which fits the memorisation
+  seen in 5.1.
+- **Gravel loses most for the head-only Swin (+9.2).** The normalisation also equalises each tile's contrast, and a
+  stone against a fine matrix is largely a brightness-contrast cue, so this is a loss of contrast more than of
+  colour.
+
+**In short:** colour is a strong signal in this data set, strong enough that a pixel-shuffle-invariant colour
+model matches the fine-tuned transformers. The useful extra that the image models add over colour is modest
+(about 4 EMD), and most models do not depend on colour, but the scratch ViT-Ti does on fine soils.
+
+**Limits.** One CV split, so changes under about 5 EMD are close to noise. The normalisation removes contrast
+together with colour; a grey-scale variant (`--mode gray`) would keep contrast and separate the two.
 
 
 ### 5.3 Attention and Grad-CAM maps

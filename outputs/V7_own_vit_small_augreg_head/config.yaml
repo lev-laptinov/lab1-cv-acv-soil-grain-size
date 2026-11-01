@@ -1,0 +1,33 @@
+agg: mean
+aug:
+  colour: 0.0
+  cutmix_p: 0.0
+  rrc_min_scale: null
+  white_balance: 0.0
+backbone: own_vit
+batch_size: 32
+checkpoint_repeats:
+- 0
+drop_path: 0.0
+epochs: 2
+freeze_backbone: true
+init: vit_small_patch16_224.augreg_in21k_ft_in1k
+layer_decay: null
+loss: emd
+lr: 0.001
+name: V7_own_vit_small_augreg_head
+repeats:
+- 0
+tile_mm: 50
+tta: true
+vit:
+  depth: 12
+  embed_dim: 384
+  global_pool: token
+  num_heads: 6
+  patch_size: 16
+  pos_embed_type: learn
+  stem: patch
+warmup_epochs: 0
+weight_decay: 0.05
+work_ppm: 4.5

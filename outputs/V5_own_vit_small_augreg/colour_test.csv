@@ -1,0 +1,3 @@
+model,input,emd,emd_fine_part,emd_coarse_part,D50_log_err,emd_fine,emd_sand,emd_gravel,mean_pred_fines_%
+V5_own_vit_small_augreg,original,43.1,17.32,25.78,0.4,61.04,55.18,25.09,26.14
+V5_own_vit_small_augreg,colournorm,42.65,17.1,25.56,0.37,62.79,50.85,25.36,26.87

@@ -1,0 +1,24 @@
+agg: mean
+aug:
+  colour: 0.0
+  cutmix_p: 0.0
+  rrc_min_scale: null
+  white_balance: 0.0
+backbone: swin_tiny_patch4_window7_224.ms_in22k_ft_in1k
+batch_size: 32
+checkpoint_repeats:
+- 0
+drop_path: 0.0
+epochs: 2
+freeze_backbone: true
+layer_decay: null
+loss: emd
+lr: 0.001
+name: V8_swin_tiny_head
+repeats:
+- 0
+tile_mm: 50
+tta: true
+warmup_epochs: 0
+weight_decay: 0.05
+work_ppm: 4.5

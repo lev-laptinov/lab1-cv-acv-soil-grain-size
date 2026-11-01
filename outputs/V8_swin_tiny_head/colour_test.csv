@@ -1,0 +1,3 @@
+model,input,emd,emd_fine_part,emd_coarse_part,D50_log_err,emd_fine,emd_sand,emd_gravel,mean_pred_fines_%
+V8_swin_tiny_head,original,38.46,15.58,22.88,0.33,46.09,49.76,27.44,28.51
+V8_swin_tiny_head,colournorm,43.59,16.75,26.84,0.39,47.46,51.9,36.59,30.29

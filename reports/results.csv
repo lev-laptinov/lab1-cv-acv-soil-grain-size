@@ -23,3 +23,6 @@ B2_random_curve,none (no photo),,,,0.0,,113.73,29.03,84.7,1.2,125.01,100.12,113.
 V4_own_vit_tiny_scratch,own_vit d192 (scratch),50.0,4.5,mean,3458.0,,39.3,15.58,23.72,0.35,45.01,53.47,27.93,0.0,finetune,13.48,1.0,"Tesla T4 0.33 h, peak 0.9 GB"
 V5_own_vit_small_augreg,own_vit d384 (vit_small_patch16_224.augreg_in21k_ft_in1k),50.0,4.5,mean,3458.0,,43.1,17.32,25.78,0.4,61.04,55.18,25.09,0.0,finetune,19.77,1.0,"Tesla T4 0.23 h, peak 1.4 GB"
 V6_swin_tiny,swin_tiny_patch4_window7_224.ms_in22k_ft_in1k,50.0,4.5,mean,3458.0,,43.41,17.66,25.75,0.4,63.36,53.88,25.0,0.0,finetune,18.78,1.0,"Tesla T4 0.41 h, peak 2.6 GB"
+X1_colour_only,colour_stats,50.0,4.5,mean,3458.0,0.1,44.09,14.81,29.28,0.35,55.41,48.54,34.45,1.02,frozen+ridge,12.02,3.0,cpu ridge 3s (features cached)
+V7_own_vit_small_augreg_head,own_vit d384 (vit_small_patch16_224.augreg_in21k_ft_in1k),50.0,4.5,mean,3458.0,,39.75,15.12,24.63,0.37,46.09,46.12,32.25,0.0,finetune,14.79,1.0,"Tesla T4 0.04 h, peak 1.0 GB"
+V8_swin_tiny_head,swin_tiny_patch4_window7_224.ms_in22k_ft_in1k,50.0,4.5,mean,3458.0,,38.46,15.58,22.88,0.33,46.09,49.76,27.44,0.0,finetune,16.38,1.0,"Tesla T4 0.08 h, peak 2.3 GB"
