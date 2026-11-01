@@ -134,9 +134,15 @@ def main() -> None:
         cfg_path = m if m.endswith(".yaml") else f"part2_vit/configs/{m}.yaml"
         cfg = yaml.safe_load(open(resolve(cfg_path)))
         names.append(cfg["name"])
+        try:  # only the folds that hold the chosen soils out
+            ckpts = {f: checkpoint(cfg["name"], 0, f, args.entity) for f in sorted({int(fold_of[s]) for s in args.soils})}
+        except Exception as e:  # a model without checkpoints is left out; the others are still drawn
+            print(f"skipping {cfg['name']} in the maps: {type(e).__name__}: {e}", flush=True)
+            continue
+        models = {f: load_model(cfg_path, p).to(device) for f, p in ckpts.items()}
         g_maps, r_maps, fines = [], [], []
         for s, tile in zip(args.soils, picked, strict=True):
-            model = load_model(cfg_path, checkpoint(cfg["name"], 0, int(fold_of[s]), args.entity)).to(device)
+            model = models[int(fold_of[s])]
             x = model.prepare(torch.from_numpy(tile[None]).permute(0, 3, 1, 2).to(device))
             g_maps.append(fines_gradcam(model, x)[0].cpu())
             with torch.no_grad():
@@ -146,9 +152,11 @@ def main() -> None:
         gradcams[cfg["name"]] = (g_maps, fines)
         if r_maps:
             rollouts[cfg["name"]] = (r_maps, fines)
+        del models
 
-    map_grid(picked, args.soils, labels, cls, gradcams, "Grad-CAM of the predicted fines share (< 0.063 mm)",
-             out_dir / "maps_gradcam_fines.png")
+    if gradcams:
+        map_grid(picked, args.soils, labels, cls, gradcams, "Grad-CAM of the predicted fines share (< 0.063 mm)",
+                 out_dir / "maps_gradcam_fines.png")
     if rollouts:
         map_grid(picked, args.soils, labels, cls, rollouts, "Attention rollout (our ViT models)",
                  out_dir / "maps_rollout.png")
