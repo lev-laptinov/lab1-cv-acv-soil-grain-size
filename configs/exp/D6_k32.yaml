@@ -1,0 +1,18 @@
+# Block D (data, on the O7 recipe: ResNet-18 bags with GroupNorm): 32 tiles per bag, 2 samples per step (64 tiles per step as in O7).
+# Everything else as O7_groupnorm, the reference of this block; 3 repeats.
+name: D6_k32
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0, 1, 2]
+bag_samples: 2
+bag_tiles: 32
+epochs: 8
+opt: adamw
+lr: 3.0e-4
+weight_decay: 0.05
+warmup_epochs: 1
+bn: group
+agg: mean

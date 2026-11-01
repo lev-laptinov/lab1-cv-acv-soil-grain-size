@@ -39,3 +39,21 @@ def test_aggregate_mean_and_median_per_photo_then_mean_over_photos():
     np.testing.assert_allclose(median, base)
     assert (mean[:-1] > base[:-1]).all() and mean[-1] == 100
     assert list(aggregate(pred, meta, "mean").columns) == TARGET_COLS
+
+
+def test_tile_cache_recuts_a_truncated_file_and_writes_atomically(tmp_path, monkeypatch):
+    import soilgsd.tiles as tl
+
+    monkeypatch.setattr(tl, "resolve", lambda rel: tmp_path / rel)
+    monkeypatch.setattr(tl, "load_photo", lambda path: None)
+    monkeypatch.setattr(tl, "cut_tiles", lambda *a, **k: np.full((2, 4, 4, 3), 7, np.uint8))
+    index = pd.DataFrame({"split": ["train"], "path": ["p.jpg"], "sample_id": ["S1"], "ppm": [4.5]})
+    boxes = pd.DataFrame({"left": [0], "top": [0], "right": [10], "bottom": [10]})
+    cache = tmp_path / "data/cache/tiles/train_t50_p4.5.npz"
+    cache.parent.mkdir(parents=True)
+    cache.write_bytes(b"PK\x03\x04 truncated")  # what a half-synced copy looks like
+    tiles, meta = tl.tile_cache(index, boxes, 50, 4.5, "train")
+    assert tiles.shape == (2, 4, 4, 3) and list(meta["sample_id"]) == ["S1", "S1"]
+    assert sorted(p.name for p in cache.parent.iterdir()) == [cache.name]  # no temporary file left
+    again, _ = tl.tile_cache(index, boxes, 50, 4.5, "train")  # now read from the repaired cache
+    assert np.array_equal(again, tiles)

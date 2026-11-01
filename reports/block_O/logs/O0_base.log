@@ -1,0 +1,38 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+repeat 0 fold 0: 25s, last train EMD 25.2
+repeat 0 fold 1: 26s, last train EMD 24.2
+repeat 0 fold 2: 26s, last train EMD 27.9
+repeat 0 fold 3: 27s, last train EMD 20.2
+repeat 0 fold 4: 27s, last train EMD 25.4
+repeat 0 fold 5: 29s, last train EMD 20.5
+repeat 1 fold 0: 24s, last train EMD 20.2
+repeat 1 fold 1: 27s, last train EMD 23.1
+repeat 1 fold 2: 27s, last train EMD 18.7
+repeat 1 fold 3: 27s, last train EMD 29.0
+repeat 1 fold 4: 25s, last train EMD 19.2
+repeat 1 fold 5: 28s, last train EMD 24.6
+repeat 2 fold 0: 25s, last train EMD 25.0
+repeat 2 fold 1: 25s, last train EMD 21.6
+repeat 2 fold 2: 26s, last train EMD 23.5
+repeat 2 fold 3: 28s, last train EMD 30.4
+repeat 2 fold 4: 25s, last train EMD 21.8
+repeat 2 fold 5: 28s, last train EMD 26.4
+name                                                         O0_base
+approach                                                    finetune
+backbone                                            resnet18.a1_in1k
+tile_mm                                                           50
+work_ppm                                                         4.5
+agg                                                             mean
+train_tiles                                                     3458
+emd                                                            42.74
+emd_fine_part                                                  18.28
+emd_coarse_part                                                24.46
+D50_log_err                                                     0.37
+emd_fine                                                       50.85
+emd_sand                                                        53.7
+emd_gravel                                                      31.6
+emd_std_folds                                                   17.4
+emd_std_repeats                                                 3.06
+repeats                                                            3
+compute            NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 ... 
+

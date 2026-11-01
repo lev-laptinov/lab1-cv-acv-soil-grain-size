@@ -9,6 +9,7 @@ import torch
 from timm.optim import create_optimizer_v2
 from timm.scheduler import CosineLRScheduler
 from torch import nn
+from torchvision.transforms import functional as TF
 
 from soilgsd.data import TARGET_COLS
 from soilgsd.features import BACKBONE_KWARGS
@@ -81,10 +82,13 @@ def emd_loss(pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     return (torch.abs(pred[:, :-1] - target[:, :-1]) @ w).mean()
 
 
-def augment(x: torch.Tensor) -> torch.Tensor:
-    """Augmentations that keep millimetres per pixel: rotations by 90 degrees, flips, mild colour.
+def augment(x: torch.Tensor, colour: str = "mild", sharpness: bool = False) -> torch.Tensor:
+    """Augmentations that keep millimetres per pixel: rotations by 90 degrees, flips, colour.
 
-    No random resized crops, zoom or blur: they change the apparent grain size and so the label.
+    No random resized crops or zoom: they change the apparent grain size and so the label.
+    colour="strong" adds per-channel gains (white balance) and saturation changes, because colour mostly
+    encodes the phone (EDA); sharpness=True blurs or sharpens by at most ~1 px, the spread between the
+    soft Samsung and the sharp iPhone 16 photos.
     """
     k = torch.randint(0, 4, (len(x),), device=x.device)
     for r in range(1, 4):
@@ -93,10 +97,36 @@ def augment(x: torch.Tensor) -> torch.Tensor:
             x[m] = torch.rot90(x[m], r, dims=(2, 3))
     flip = torch.rand(len(x), device=x.device) < 0.5
     x[flip] = torch.flip(x[flip], dims=(3,))
-    brightness = 1 + 0.1 * (2 * torch.rand(len(x), 1, 1, 1, device=x.device) - 1)
-    contrast = 1 + 0.1 * (2 * torch.rand(len(x), 1, 1, 1, device=x.device) - 1)
+    amp = 0.1 if colour == "mild" else 0.25
+    brightness = 1 + amp * (2 * torch.rand(len(x), 1, 1, 1, device=x.device) - 1)
+    contrast = 1 + amp * (2 * torch.rand(len(x), 1, 1, 1, device=x.device) - 1)
     mean = x.mean(dim=(1, 2, 3), keepdim=True)
-    return ((x - mean) * contrast + mean * brightness).clamp(0, 1)
+    x = (x - mean) * contrast + mean * brightness
+    if colour == "strong":
+        x = x * (1 + 0.15 * (2 * torch.rand(len(x), 3, 1, 1, device=x.device) - 1))
+        gray = x.mean(dim=1, keepdim=True)
+        x = gray + (x - gray) * 1.5 * torch.rand(len(x), 1, 1, 1, device=x.device)
+    if sharpness:
+        x = sharpness_jitter(x)
+    return x.clamp(0, 1)
+
+
+def sharpness_jitter(x: torch.Tensor) -> torch.Tensor:
+    """Per tile one of: blur (sigma 1 or 0.5 px), unchanged, or unsharp mask (amount 0.5 or 1, sigma 1 px)."""
+    level = torch.randint(0, 5, (len(x),), device=x.device)
+    out = x.clone()
+    for lv, sigma, amount in [(0, 1.0, None), (1, 0.5, None), (3, 1.0, 0.5), (4, 1.0, 1.0)]:
+        m = level == lv
+        if m.any():
+            blurred = TF.gaussian_blur(x[m], kernel_size=5, sigma=sigma)
+            out[m] = blurred if amount is None else x[m] + amount * (x[m] - blurred)
+    return out
+
+
+def to_gray(x: torch.Tensor) -> torch.Tensor:
+    """Luminance in all three channels: the pretrained stem still gets 3 channels, but no colour."""
+    w = torch.tensor([0.299, 0.587, 0.114], device=x.device, dtype=x.dtype).view(1, 3, 1, 1)
+    return (x * w).sum(1, keepdim=True).expand(-1, 3, -1, -1).contiguous()
 
 
 def freeze_bn_stats(model: nn.Module) -> None:
@@ -151,6 +181,15 @@ class Trainer:
 
     def _norm(self, x: torch.Tensor) -> torch.Tensor:
         return (x - self.mean) / self.std
+
+    def _input(self, tiles: np.ndarray, train: bool) -> torch.Tensor:
+        """uint8 tiles -> normalised network input; augmented when training, grayscale (if set) always."""
+        x = to_input(tiles, self.device)
+        if train:
+            x = augment(x, self.exp.get("colour_aug", "mild"), self.exp.get("sharpness_aug", False))
+        if self.exp.get("grayscale"):
+            x = to_gray(x)
+        return self._norm(x)
 
     def _bags(self, sample_ids: pd.Series, photo_ids: pd.Series | None) -> dict:
         """Per sample: its tile positions and their draw weights (every photo of the sample weighs the same)."""
@@ -219,7 +258,7 @@ class Trainer:
                     else:
                         idx = np.sort(order[b * bs:(b + 1) * bs])
                         yb = y_tiles[idx]
-                    x = self._norm(augment(to_input(tiles[idx], self.device)))
+                    x = self._input(tiles[idx], train=True)
                     y = torch.from_numpy(yb).float().to(self.device)
                     with torch.autocast("cuda", dtype=torch.float16, enabled=self.amp):
                         pred = self.model.forward_bags(x, bag_k) if bag_k else self.model(x)
@@ -246,7 +285,7 @@ class Trainer:
         out = []
         for i in range(0, len(tiles), batch):
             with torch.autocast("cuda", dtype=torch.float16, enabled=self.amp):
-                out.append(self.model(self._norm(to_input(tiles[i:i + batch], self.device))).float().cpu().numpy())
+                out.append(self.model(self._input(tiles[i:i + batch], train=False)).float().cpu().numpy())
         return np.concatenate(out)
 
     @torch.no_grad()
@@ -259,7 +298,7 @@ class Trainer:
         feats = []
         for i in range(0, len(tiles), batch):
             with torch.autocast("cuda", dtype=torch.float16, enabled=self.amp):
-                feats.append(self.model.backbone(self._norm(to_input(tiles[i:i + batch], self.device))).float().cpu())
+                feats.append(self.model.backbone(self._input(tiles[i:i + batch], train=False)).float().cpu())
         df = pd.DataFrame(torch.cat(feats).numpy())
         df["sample_id"], df["path"] = meta["sample_id"].to_numpy(), meta["path"].to_numpy()
         per_sample = df.groupby(["sample_id", "path"]).mean().groupby("sample_id").mean()
@@ -289,10 +328,13 @@ def cross_validate(exp: dict, tiles: np.ndarray, meta: pd.DataFrame, labels: pd.
     oof, logs = [], []
     for (repeat, fold), part in folds[folds["repeat"].isin(repeats)].groupby(["repeat", "fold"]):
         is_val = meta["sample_id"].isin(set(part["sample_id"])).to_numpy()
-        m_tr, m_va = meta[~is_val].reset_index(drop=True), meta[is_val].reset_index(drop=True)
+        # exclude_train: samples never used for training (suspected label errors); they are still predicted
+        # and scored when they are in the validation fold
+        is_tr = ~is_val & ~meta["sample_id"].isin(exp.get("exclude_train", [])).to_numpy()
+        m_tr, m_va = meta[is_tr].reset_index(drop=True), meta[is_val].reset_index(drop=True)
         trainer = Trainer(exp, device, seed + 100 * repeat + fold)
         start = time.time()
-        log = trainer.fit(tiles[~is_val], y_samples.loc[m_tr["sample_id"]].to_numpy(), m_tr["sample_id"],
+        log = trainer.fit(tiles[is_tr], y_samples.loc[m_tr["sample_id"]].to_numpy(), m_tr["sample_id"],
                           photo_ids=m_tr["path"])
         if exp.get("bag_tiles"):
             agg = trainer.predict_samples(tiles[is_val], m_va)

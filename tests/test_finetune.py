@@ -133,3 +133,48 @@ def test_train_layers_keeps_the_rest_of_the_backbone_fixed():
     moved = {k for k in before if not torch.equal(before[k], after[k])}
     assert moved and all(k.startswith(("backbone.layer4.", "head.")) for k in moved)
     assert any(k.startswith("head.") for k in moved) and any(k.startswith("backbone.layer4.") for k in moved)
+
+
+def test_strong_colour_and_sharpness_augment_stay_in_range_and_keep_brightness():
+    torch.manual_seed(0)
+    x = torch.rand(16, 3, 32, 32) * 0.5 + 0.25
+    a = augment(x.clone(), colour="strong", sharpness=True)
+    assert a.shape == x.shape and a.min() >= 0 and a.max() <= 1
+    assert torch.allclose(a.mean(dim=(1, 2, 3)), x.mean(dim=(1, 2, 3)), atol=0.25)
+
+
+def test_sharpness_jitter_only_blurs_or_sharpens():
+    from soilgsd.finetune import sharpness_jitter
+
+    torch.manual_seed(0)
+    x = torch.rand(64, 3, 32, 32)
+    out = sharpness_jitter(x)
+    detail = lambda t: (t[..., 1:, :] - t[..., :-1, :]).abs().mean(dim=(1, 2, 3))  # noqa: E731
+    changed = ~torch.isclose(detail(out), detail(x))
+    assert changed.any() and (~changed).any()  # some tiles untouched, some blurred or sharpened
+    assert torch.allclose(out.mean(dim=(1, 2, 3)), x.mean(dim=(1, 2, 3)), atol=0.02)
+
+
+def test_grayscale_option_applies_in_training_and_in_prediction():
+    tiles, meta, y = _bag_data()
+    trainer = Trainer(_bag_exp(grayscale=True), torch.device("cpu"), seed=0)
+    for train in (True, False):
+        x = trainer._input(tiles, train=train) * trainer.std + trainer.mean  # undo the normalisation
+        assert torch.allclose(x[:, 0], x[:, 1], atol=1e-5) and torch.allclose(x[:, 1], x[:, 2], atol=1e-5)
+
+
+def test_exclude_train_drops_a_sample_from_training_but_still_scores_it(monkeypatch):
+    from soilgsd.finetune import cross_validate
+
+    tiles, meta, _ = _bag_data()
+    labels = pd.DataFrame({"sample_id": list("abc"), **{c: np.linspace(5, 100, 11)[i] for i, c in
+                                                      enumerate(["0.002", "0.0063", "0.02", "0.063", "0.2", "0.63",
+                                                                 "2", "6.3", "20", "63", "200"])}})
+    folds = pd.DataFrame({"sample_id": list("abc"), "repeat": 0, "fold": [0, 1, 2]})
+    seen = []
+    orig = Trainer.fit
+    monkeypatch.setattr(Trainer, "fit", lambda self, t, y, s, **k: seen.append(set(s)) or orig(self, t, y, s, **k))
+    exp = _bag_exp(bag_samples=1, exclude_train=["a"])
+    oof, _ = cross_validate(exp, tiles, meta, labels, folds, torch.device("cpu"), seed=0)
+    assert all("a" not in s for s in seen)
+    assert set(oof["sample_id"]) == {"a", "b", "c"}

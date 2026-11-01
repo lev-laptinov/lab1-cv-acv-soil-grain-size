@@ -1,7 +1,9 @@
 """Soil region, resampling to a common scale and fixed-size tiles in millimetres."""
 
+import os
 import re
 import unicodedata
+import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -152,8 +154,13 @@ def tile_cache(index: pd.DataFrame, boxes: pd.DataFrame, tile_mm: float, work_pp
     """
     path = resolve(f"data/cache/tiles/{split}_t{tile_mm:g}_p{work_ppm:g}.npz")
     if path.exists():
-        z = np.load(path, allow_pickle=False)
-        return z["tiles"], pd.DataFrame({"path": z["path"], "sample_id": z["sample_id"]})
+        try:
+            z = np.load(path, allow_pickle=False)
+            return z["tiles"], pd.DataFrame({"path": z["path"], "sample_id": z["sample_id"]})
+        except (zipfile.BadZipFile, ValueError, EOFError, OSError, KeyError) as e:
+            # A truncated copy (an interrupted write or a half-synced Drive file): cut the tiles again
+            print(f"tile cache {path.name} is unreadable ({e!r}); cutting the tiles again", flush=True)
+            path.unlink()
     tiles, rows = [], []
     for i, r in index[index["split"] == split].iterrows():
         b = boxes.loc[i]
@@ -164,5 +171,8 @@ def tile_cache(index: pd.DataFrame, boxes: pd.DataFrame, tile_mm: float, work_pp
     tiles = np.concatenate(tiles)
     meta = pd.DataFrame(rows, columns=["path", "sample_id"])
     path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(path, tiles=tiles, path=meta["path"].to_numpy(str), sample_id=meta["sample_id"].to_numpy(str))
+    # Written under a temporary name and renamed: a killed process never leaves a half-written cache behind
+    tmp = path.with_name(f"{path.stem}.{os.getpid()}.tmp.npz")
+    np.savez(tmp, tiles=tiles, path=meta["path"].to_numpy(str), sample_id=meta["sample_id"].to_numpy(str))
+    os.replace(tmp, path)
     return tiles, meta

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Build build/kaggle_bundle/: the code, the folds and the cached tiles, uploaded as one private
 # Kaggle dataset so that fine-tuning runs on a Kaggle GPU with exactly the local pipeline.
-#   bash kaggle/bundle.sh && uvx kaggle datasets create -p build/kaggle_bundle --dir-mode zip   (first time)
-#   bash kaggle/bundle.sh && uvx kaggle datasets version -p build/kaggle_bundle -m "update" --dir-mode zip
+#   bash kaggle/bundle.sh && uv run kaggle datasets create -p build/kaggle_bundle --dir-mode zip   (first time)
+#   bash kaggle/bundle.sh && uv run kaggle datasets version -p build/kaggle_bundle -m "update" --dir-mode zip
 set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT=build/kaggle_bundle
@@ -17,7 +17,9 @@ done
 # Without a local tile cache the kernel cuts the tiles from the competition photos itself
 cp data/cache/tiles/*.npz "$OUT/tiles/" 2>/dev/null || echo "no local tiles: the kernel will cut them"
 find "$OUT" -name __pycache__ -prune -exec rm -rf {} +
-USER=$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.kaggle/kaggle.json')))['username'])")
+# Kaggle user: KAGGLE_USER, else the legacy kaggle.json, else the CLI login (OAuth, ~/.kaggle/credentials.json)
+USER=${KAGGLE_USER:-$(python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.kaggle/kaggle.json')))['username'])" 2>/dev/null \
+  || uv run kaggle config view | awk '/username:/ {print $3}')}
 cat > "$OUT/dataset-metadata.json" <<JSON
 {"title": "soilgsd-bundle", "id": "$USER/soilgsd-bundle", "licenses": [{"name": "other"}]}
 JSON
