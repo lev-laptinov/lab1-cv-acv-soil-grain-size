@@ -1,0 +1,22 @@
+# Block L (leave-one-device-out diagnostic): the D3_sharpness recipe trained on Samsung A52 photos only and validated
+# on the Samsung A52 photos of the held-out samples: same phone (reference). Same sample folds as every experiment;
+# 21 of 24 samples have photos from both phones. Not a model for the test set.
+name: L_D3_S2S
+approach: finetune
+backbone: resnet18.a1_in1k
+pretrained: true
+tile_mm: 50
+work_ppm: 4.5
+repeats: [0, 1, 2]
+bag_samples: 4
+bag_tiles: 16
+epochs: 8
+opt: adamw
+lr: 0.0003
+weight_decay: 0.05
+warmup_epochs: 1
+bn: group
+sharpness_aug: true
+train_devices: [Samsung A52]
+val_devices: [Samsung A52]
+agg: mean

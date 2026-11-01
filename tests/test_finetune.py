@@ -178,3 +178,25 @@ def test_exclude_train_drops_a_sample_from_training_but_still_scores_it(monkeypa
     oof, _ = cross_validate(exp, tiles, meta, labels, folds, torch.device("cpu"), seed=0)
     assert all("a" not in s for s in seen)
     assert set(oof["sample_id"]) == {"a", "b", "c"}
+
+
+def test_device_filters_train_on_one_phone_and_validate_on_another(monkeypatch):
+    from soilgsd.finetune import cross_validate
+
+    tiles, meta, _ = _bag_data()
+    meta = meta.assign(device=["M", "M", "S", "S"] * 3)  # every sample has photos from both phones
+    labels = pd.DataFrame({"sample_id": list("abc"), **{c: np.linspace(5, 100, 11)[i] for i, c in
+                                                      enumerate(["0.002", "0.0063", "0.02", "0.063", "0.2", "0.63",
+                                                                 "2", "6.3", "20", "63", "200"])}})
+    folds = pd.DataFrame({"sample_id": list("abc"), "repeat": 0, "fold": [0, 1, 2]})
+    seen_paths, val_paths = [], []
+    orig_fit, orig_pred = Trainer.fit, Trainer.predict_samples
+    monkeypatch.setattr(Trainer, "fit", lambda self, t, y, s, **k: seen_paths.append(set(k["photo_ids"]))
+                        or orig_fit(self, t, y, s, **k))
+    monkeypatch.setattr(Trainer, "predict_samples", lambda self, t, m: val_paths.append(set(m["path"]))
+                        or orig_pred(self, t, m))
+    exp = _bag_exp(bag_samples=1, train_devices=["M"], val_devices=["S"])
+    oof, _ = cross_validate(exp, tiles, meta, labels, folds, torch.device("cpu"), seed=0)
+    m_paths, s_paths = set(meta.path[meta.device == "M"]), set(meta.path[meta.device == "S"])
+    assert all(p <= m_paths for p in seen_paths) and all(p <= s_paths for p in val_paths)
+    assert set(oof["sample_id"]) == {"a", "b", "c"}

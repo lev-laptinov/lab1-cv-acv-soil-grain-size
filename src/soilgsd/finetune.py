@@ -207,7 +207,8 @@ class Trainer:
         """bag_samples different samples, bag_tiles random tiles of each: tile positions (bag-major) and labels."""
         k, n = self.exp["bag_tiles"], self.exp["bag_samples"]
         sids = self.rng.choice(list(bags), size=n, replace=False)
-        idx = [self.rng.choice(bags[s][0], size=k, replace=False, p=bags[s][1]) for s in sids]
+        # Without repetition, unless a sample has fewer tiles than a bag (e.g. one phone's photos only)
+        idx = [self.rng.choice(bags[s][0], size=k, replace=len(bags[s][0]) < k, p=bags[s][1]) for s in sids]
         return np.concatenate(idx), np.stack([y_tiles[i[0]] for i in idx])
 
     def fit(self, tiles: np.ndarray, y_tiles: np.ndarray, sample_ids: pd.Series, max_steps: int | None = None,
@@ -327,10 +328,19 @@ def cross_validate(exp: dict, tiles: np.ndarray, meta: pd.DataFrame, labels: pd.
     repeats = exp.get("repeats", sorted(folds["repeat"].unique()))
     oof, logs = [], []
     for (repeat, fold), part in folds[folds["repeat"].isin(repeats)].groupby(["repeat", "fold"]):
-        is_val = meta["sample_id"].isin(set(part["sample_id"])).to_numpy()
+        in_fold = meta["sample_id"].isin(set(part["sample_id"])).to_numpy()
         # exclude_train: samples never used for training (suspected label errors); they are still predicted
         # and scored when they are in the validation fold
-        is_tr = ~is_val & ~meta["sample_id"].isin(exp.get("exclude_train", [])).to_numpy()
+        is_tr = ~in_fold & ~meta["sample_id"].isin(exp.get("exclude_train", [])).to_numpy()
+        is_val = in_fold.copy()
+        # train_devices / val_devices (diagnostic): train on photos of some phones only, validate on the photos
+        # of others, with the same sample folds. Needs a "device" column in meta.
+        if exp.get("train_devices"):
+            is_tr &= meta["device"].isin(exp["train_devices"]).to_numpy()
+        if exp.get("val_devices"):
+            is_val &= meta["device"].isin(exp["val_devices"]).to_numpy()
+        if not is_val.any():
+            continue
         m_tr, m_va = meta[is_tr].reset_index(drop=True), meta[is_val].reset_index(drop=True)
         trainer = Trainer(exp, device, seed + 100 * repeat + fold)
         start = time.time()

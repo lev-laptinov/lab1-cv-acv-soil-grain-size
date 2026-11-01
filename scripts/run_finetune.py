@@ -39,6 +39,7 @@ def main() -> None:
     for exp_path in args.exps:
         exp = yaml.safe_load(open(resolve(exp_path)))
         tiles, meta = tile_cache(index, boxes, exp["tile_mm"], exp["work_ppm"], "train")
+        meta["device"] = meta["path"].map(index.set_index("path")["device"])  # for train_devices / val_devices
         if args.smoke:
             val = set(folds[(folds["repeat"] == 0) & (folds["fold"] == 0)]["sample_id"])
             keep = ~meta["sample_id"].isin(val).to_numpy()
