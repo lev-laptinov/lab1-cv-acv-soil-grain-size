@@ -159,25 +159,37 @@ None of these is significant on one split. Repeats 1–2 of the folds are the ne
 
 ### 5.1 Fine-tuning a pretrained transformer makes it memorise
 
-![alt text](image-2.png)
+*Models trained end to end (V4–V6): validation EMD per fold (thin), its mean (thick) and training EMD (dashed).*
 
-![Training and validation EMD per epoch](image.png)
+![Training and validation EMD per epoch, V4–V6](figures/curves.png)
 
-![alt text](image-1.png)
+*Head-only models (V7, V8), from W&B: training EMD per step and per epoch, validation EMD per fold.*
+
+![Head-only runs: training and validation](image-2.png)
+
+![Head-only Swin-T (V8): training EMD](image.png)
+
+![Head-only Swin-T (V8): validation EMD per fold](image-1.png)
 
 Training EMD is per tile and validation EMD per soil (after averaging tiles), so the two levels are not directly
 comparable; what matters is how each moves.
 
-| | Full fine-tuning (V6 Swin-T) | Head only (V8 Swin-T) |
-|---|---|---|
-| Training EMD | keeps falling for 10 epochs | falls from about 60 to about 30 within the first ~30 steps, then only fluctuates (20–40) |
-| Validation EMD after epoch 1 | flat in folds 0, 2, 3; **rises** in folds 1 (30 → 52), 4 (27 → 40), 5 (57 → 75) | flat in every fold (changes of 1–2 EMD) |
-| Best validation | after the first epoch | reached after the first epoch and kept |
+| | Full fine-tuning (V5 ViT-S, V6 Swin-T) | Scratch (V4 ViT-Ti) | Head only (V7, V8) |
+|---|---|---|---|
+| Training EMD | falls from about 55 to 11–15 over 10 epochs | falls slowly, about 70 → 26 over 30 epochs | falls from about 60 to about 30 within the first ~30 steps, then only fluctuates (20–40) |
+| Mean validation EMD | **best after epoch 1** (about 38–40), then rises to about 46–47 and stays | noisy for ~10 epochs (a spike right after warmup ends), then flat around 41 | flat from the first measurement (changes of 1–2 EMD per fold) |
+| Per fold | V6 rises in folds 1 (30 → 52), 4 (27 → 40) and 5 (57 → 75) | – | no fold drifts |
 
 **Full fine-tuning memorises.** With about 20 training soils per fold, a pretrained network can lower its
 training loss by recognising *which soil* a tile comes from, and with all its weights free it does: training EMD
 keeps falling while validation gets worse. Whatever it learned about grain size is learned in the first epoch;
-the later epochs fit the training soils.
+the later epochs fit the training soils. Stopped after one epoch, V5 and V6 would have been at about 38–40, the
+level of the head-only models. That number is read off the validation curves, so it is a hint, not a result:
+choosing the epoch on these folds and reporting CV on the same folds would be optimistic.
+
+**The scratch ViT-Ti cannot memorise as easily.** It is small (5.7M parameters) and starts from nothing, so its
+training EMD falls slowly and stays far from the fine-tuned models' 11–15. Its validation settles around 41
+after a noisy start (the spike comes right after warmup, at the peak learning rate).
 
 **Head only cannot memorise, and converges almost at once.** The backbone is fixed, so the only thing that adapts
 is a linear map from the backbone's features (768 for Swin-T, 384 for ViT-S) to 11 bin shares. It finds its best fit within a third of an epoch, and
@@ -234,9 +246,47 @@ V4 and V5 not run yet².
 
 ### 5.3 Attention and Grad-CAM maps
 
+Each row is one soil, the same 50 mm tile for every model, and each model is the fold model that never saw that
+soil. Under each map: the model's predicted fines share for that tile; on the left: the true value. Rows H126,
+F827 (fine) and H616 (sand) are failure cases, H516 (sand) and H183 (gravel) are predicted well, H038 (gravel,
+looks fine) is in between. Maps are normalised per tile, so their colour shows *where* the evidence is within a
+tile, not how strong it is compared with another tile.
+
+**Grad-CAM of the predicted fines share** (the share below 0.063 mm), the same method for all five models. For
+our ViTs it is taken at the input of the last block: with [CLS] pooling, patch tokens after the last block never
+reach the head, so their gradient is zero.
+
 ![Grad-CAM of the predicted fines share, the same tiles for all models](figures/maps_gradcam_fines.png)
 
+- **All five models fail the same soils the same way.** H616 is sand with 3 % fines and every model predicts
+  58–75 % fines. H126 (68 % fines) and F827 (90 %) are predicted far too coarse. The gravel soil H183 is right
+  for every model (4–8 % against 5 %). A shared failure across a scratch ViT, a pretrained ViT and Swin, fine-tuned
+  or frozen, points to the photos, not to an architecture: H616 is a field of small rounded grains that looks
+  like dried fine soil, and H126 is a fine soil full of sand-sized clumps.
+- **The plain ViTs spread their fines evidence over large parts of the tile** (V4 on H616 and H038, V5 on H126
+  and F827, V7 on H126 and H038). They read fines as a property of the texture everywhere, a statistic rather than
+  a location. The Swin models put it on a few local spots, which matches their local windows and 14 × 14 stage-3
+  grid.
+- **On the gravel tile, most of the evidence sits in the gaps between stones**, where the fine matrix is. The
+  ViT-S models and the fine-tuned Swin also mark the large stone. For the ViT-S models that is the same token the
+  rollout highlights (below), so it is more likely an attention sink than real evidence of fines.
+
+**Attention rollout** of our three ViTs (Swin has no global attention to roll out).
+
 ![Attention rollout of our ViT models](figures/maps_rollout.png)
+
+- **Fine-tuning barely changes where the ViT-S attends.** The fine-tuned V5 and the frozen V7 have almost
+  identical rollout maps on every soil, yet they score 43.1 and 39.8. The difference between them comes from the
+  features and the head, not from the attention pattern.
+- **Attention concentrates on a few isolated tokens:** single grains or the face of the large stone in H183.
+  These are typical attention sinks (Darcet et al., 2024). Rollout shows where information is routed, not what
+  decides the curve.
+- **The scratch ViT-Ti spreads its attention more,** most visibly on the fine soil H126, where it scores best of
+  all models (fine soils 45.0 against 61–63 for the fine-tuned ones).
+
+**Rollout or Grad-CAM?** Rollout is the same map whatever the model predicts; Grad-CAM is tied to one output,
+here the fines share. To ask "what in the image makes this model predict fines?", Grad-CAM is the one to read.
+Neither proves a shortcut on its own; that needs a control with a number, such as the colour test in 5.2.
 
 
 
