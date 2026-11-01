@@ -1,0 +1,24 @@
+agg: mean
+approach: finetune
+backbone: resnet18.a1_in1k
+bag_samples: 4
+bag_tiles: 16
+bn: group
+epochs: 8
+grayscale: true
+lr: 0.0003
+name: L_D1_M2S
+opt: adamw
+pretrained: true
+repeats:
+- 0
+- 1
+- 2
+tile_mm: 50
+train_devices:
+- Motorola Edge
+val_devices:
+- Samsung A52
+warmup_epochs: 1
+weight_decay: 0.05
+work_ppm: 4.5

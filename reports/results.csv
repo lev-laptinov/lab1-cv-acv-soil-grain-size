@@ -1,52 +1,73 @@
-name,backbone,tile_mm,work_ppm,agg,train_tiles,alpha_median,emd,emd_fine_part,emd_coarse_part,D50_log_err,emd_fine,emd_sand,emd_gravel,emd_std_repeats,approach,emd_std_folds,repeats,compute
-T1_base,resnet50.a1_in1k,50,4.5,mean,3458.0,1000.0,43.46,16.06,27.41,0.36,57.65,52.85,29.31,2.79,frozen+ridge,14.42,3.0,cpu ridge 36s (features cached)
-T2_tile20,resnet50.a1_in1k,20,4.5,mean,18944.0,10000.0,43.77,14.86,28.9,0.36,57.77,50.6,31.12,3.11,frozen+ridge,12.68,3.0,cpu ridge 66s (features cached)
-T3_ppm2.25,resnet50.a1_in1k,50,2.25,mean,3458.0,10000.0,43.21,16.17,27.05,0.35,57.93,50.23,30.02,3.14,frozen+ridge,16.1,3.0,cpu ridge 33s (features cached)
-T4_median,resnet50.a1_in1k,50,4.5,median,3458.0,1000.0,42.85,15.78,27.07,0.36,57.43,52.62,28.24,2.82,frozen+ridge,14.66,3.0,cpu ridge 33s (features cached)
-S1_dinov2_frozen,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,3458.0,1000.0,44.75,16.32,28.43,0.36,65.27,49.38,29.18,3.26,frozen+ridge,16.68,3.0,cpu ridge 4s (features cached)
-S1_mae_frozen,vit_base_patch16_224.mae,50,4.5,mean,3458.0,10000.0,38.32,14.87,23.45,0.32,49.53,47.32,26.28,2.13,frozen+ridge,14.67,3.0,cpu ridge 6s (features cached)
-C1_resnet18_ft,resnet18.a1_in1k,50,4.5,mean,3458.0,,42.85,16.95,25.9,0.38,53.63,52.41,30.77,2.56,finetune,18.22,3.0,"Tesla T4 0.06 h (fold training time; peak memory not recorded) + Tesla T4 0.11 h, peak 0.6 GB"
-C2_resnet18_bn_train,resnet18.a1_in1k,50,4.5,mean,3458.0,,42.87,16.1,26.77,0.37,51.6,55.18,30.6,2.46,finetune,16.42,3.0,"Tesla T4 0.05 h (fold training time; peak memory not recorded) + Tesla T4 0.10 h, peak 0.6 GB"
-C3_resnet18_sgd,resnet18.a1_in1k,50,4.5,mean,,,,,,1.17,,,,,finetune,25.48,1.0,Tesla T4 0.05 h (fold training time; peak memory not recorded)
-V3_deit_small_no_llrd,deit_small_patch16_224.fb_in1k,50,4.5,mean,3458.0,,46.33,18.34,27.99,0.42,63.74,54.97,30.54,3.43,finetune,18.4,3.0,"Tesla T4 0.14 h (fold training time; peak memory not recorded) + Tesla T4 0.25 h, peak 1.4 GB"
-V2_deit_small_ft,deit_small_patch16_224.fb_in1k,50,4.5,mean,3458.0,,46.16,18.63,27.53,0.42,63.09,54.86,30.64,2.83,finetune,19.15,3.0,"Tesla T4 0.14 h (fold training time; peak memory not recorded) + Tesla T4 0.25 h, peak 1.4 GB"
-S2_dinov2_ft,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,3458.0,,43.35,17.25,26.1,0.37,51.63,54.4,32.05,2.53,finetune,17.83,3.0,"Tesla T4 0.19 h (fold training time; peak memory not recorded) + Tesla T4 0.33 h, peak 1.9 GB"
-S3_dinov2_lpft,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,,,93.18,22.38,70.8,0.83,131.63,90.35,70.26,0.0,finetune,41.5,1.0,Tesla T4 0.20 h (fold training time; peak memory not recorded)
-C4_convnext_tiny_ft,convnext_tiny.fb_in22k_ft_in1k,50,4.5,mean,3458.0,,46.99,18.38,28.61,0.42,64.15,55.4,31.48,2.83,finetune,18.71,3.0,"Tesla T4 0.22 h (fold training time; peak memory not recorded) + Tesla T4 0.39 h, peak 2.4 GB"
-V1_vit_small_scratch,deit_small_patch16_224.fb_in1k,50,4.5,mean,3458.0,,37.69,14.8,22.9,0.33,39.69,49.36,30.05,1.74,finetune,15.74,3.0,"Tesla T4 0.52 h (fold training time; peak memory not recorded) + Tesla T4 0.91 h, peak 1.4 GB"
-S3b_dinov2_lpft,vit_small_patch14_dinov2.lvd142m,50,4.5,mean,3458.0,,43.67,17.48,26.19,0.38,52.0,55.2,32.08,2.84,finetune,17.95,3.0,"Tesla T4 0.56 h, peak 1.9 GB"
-C3b_resnet18_sgd_lr1e-3,resnet18.a1_in1k,50,4.5,mean,3458.0,,47.83,17.37,30.46,0.42,51.84,59.08,39.15,7.09,finetune,24.91,3.0,"Tesla T4 0.16 h, peak 0.6 GB"
-C3c_resnet18_sgd_lr1e-4,resnet18.a1_in1k,50,4.5,mean,3458.0,,39.63,15.69,23.93,0.34,43.08,52.91,30.18,2.42,finetune,16.53,3.0,"Tesla T4 0.16 h, peak 0.6 GB"
-B_resnet18_lr1e-4,resnet18.a1_in1k,50,4.5,mean,3458.0,,40.44,16.64,23.8,0.35,43.7,50.51,32.88,0.0,finetune,17.32,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB"
-B_resnet18_lr3e-4,resnet18.a1_in1k,50,4.5,mean,3458.0,,39.72,17.14,22.59,0.35,43.59,53.87,29.54,0.0,finetune,18.07,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB"
-B_resnet50_lr1e-4,resnet50.a1_in1k,50,4.5,mean,3458.0,,39.76,17.27,22.49,0.36,40.16,52.62,32.49,0.0,finetune,17.31,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB"
-B_resnet50_lr3e-4,resnet50.a1_in1k,50,4.5,mean,3458.0,,37.49,17.08,20.41,0.34,35.94,51.53,30.82,0.0,finetune,20.82,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB"
-B_effnet_b0_lr1e-4,tf_efficientnet_b0.in1k,50,4.5,mean,3458.0,,37.73,17.52,20.21,0.36,44.44,50.44,26.53,0.0,finetune,17.87,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB"
-B_effnet_b0_lr3e-4,tf_efficientnet_b0.in1k,50,4.5,mean,3458.0,,40.24,18.1,22.14,0.37,53.1,50.99,26.2,0.0,finetune,18.97,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB"
-B_convnext_t_lr1e-4,convnext_tiny.fb_in22k_ft_in1k,50,4.5,mean,3458.0,,38.03,17.4,20.63,0.35,49.75,45.72,26.38,0.0,finetune,18.41,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB"
-B_convnext_t_lr3e-4,convnext_tiny.fb_in22k_ft_in1k,50,4.5,mean,3458.0,,41.41,17.61,23.79,0.38,67.47,46.39,22.11,0.0,finetune,19.69,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB"
-B_convnext_t_dinov3_lr1e-4,convnext_tiny.dinov3_lvd1689m,50,4.5,mean,3458.0,,46.74,16.33,30.41,0.44,44.04,53.55,44.74,0.0,finetune,22.49,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB"
-B_convnext_t_dinov3_lr3e-4,convnext_tiny.dinov3_lvd1689m,50,4.5,mean,3458.0,,130.52,49.84,80.68,1.13,127.27,101.98,148.15,0.0,finetune,64.59,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB"
-B_resnet18_micronet_lr1e-4,resnet18,50,4.5,mean,3458.0,,39.59,17.37,22.22,0.36,44.66,53.28,28.9,0.0,finetune,17.43,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB"
-B_resnet18_micronet_lr3e-4,resnet18,50,4.5,mean,3458.0,,37.54,17.95,19.59,0.35,41.84,52.23,26.79,0.0,finetune,18.31,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB"
-B_resnet50_micronet_lr1e-4,resnet50,50,4.5,mean,3458.0,,40.28,16.76,23.52,0.36,42.32,52.4,32.37,0.0,finetune,18.6,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB"
-B_resnet50_micronet_lr3e-4,resnet50,50,4.5,mean,3458.0,,37.63,15.08,22.55,0.32,39.0,46.11,32.13,0.0,finetune,16.46,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB"
-B_effnet_b0_micronet_lr1e-4,tf_efficientnet_b0,50,4.5,mean,3458.0,,41.41,18.98,22.43,0.37,52.21,50.01,29.85,0.0,finetune,19.78,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB"
-B_effnet_b0_micronet_lr3e-4,tf_efficientnet_b0,50,4.5,mean,3458.0,,40.49,18.41,22.08,0.35,47.88,49.69,30.76,0.0,finetune,18.47,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB"
-O2_sgd_lr1e-4,resnet18.a1_in1k,50,4.5,mean,3458.0,,41.83,17.02,24.81,0.35,47.73,54.58,31.11,3.67,finetune,17.1,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 0.9 GB"
-O3_no_warmup,resnet18.a1_in1k,50,4.5,mean,3458.0,,43.36,18.58,24.78,0.38,52.88,53.91,31.54,3.96,finetune,17.78,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 1.0 GB"
-O1_sgd_lr1e-3,resnet18.a1_in1k,50,4.5,mean,3458.0,,106.59,30.31,76.27,0.97,92.75,74.76,132.75,16.66,finetune,40.8,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 0.9 GB"
-O0_base,resnet18.a1_in1k,50,4.5,mean,3458.0,,42.74,18.28,24.46,0.37,50.85,53.7,31.6,3.06,finetune,17.4,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 1.0 GB"
-O6_bn_train,resnet18.a1_in1k,50,4.5,mean,3458.0,,41.24,17.48,23.76,0.34,44.76,55.92,31.0,1.37,finetune,16.59,3.0,"NVIDIA A100-SXM4-40GB 0.14 h (GPU shared by 4 runs), peak 1.0 GB"
-O4_warmup3,resnet18.a1_in1k,50,4.5,mean,3458.0,,43.76,18.47,25.29,0.38,53.15,53.07,32.71,3.06,finetune,17.92,3.0,"NVIDIA A100-SXM4-40GB 0.14 h (GPU shared by 4 runs), peak 1.0 GB"
-O7_groupnorm,resnet18.a1_in1k,50,4.5,mean,3458.0,,38.35,16.09,22.26,0.32,44.26,50.06,28.2,2.92,finetune,16.16,3.0,"NVIDIA A100-SXM4-40GB 0.15 h (GPU shared by 4 runs), peak 1.8 GB"
-O8_layer4_only,resnet18.a1_in1k,50,4.5,mean,3458.0,,41.63,18.59,23.05,0.37,47.27,53.64,31.5,2.03,finetune,18.59,3.0,"NVIDIA A100-SXM4-40GB 0.06 h (GPU shared by 4 runs), peak 0.6 GB"
-O5_epochs20,resnet18.a1_in1k,50,4.5,mean,3458.0,,44.28,19.34,24.94,0.4,61.26,52.96,28.74,2.48,finetune,17.61,3.0,"NVIDIA A100-SXM4-40GB 0.22 h (GPU shared by 4 runs), peak 1.0 GB"
-D2_colour_strong,resnet18.a1_in1k,50,4.5,mean,3458.0,,37.79,16.04,21.75,0.32,40.95,47.92,30.26,1.28,finetune,17.65,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB"
-D1_gray,resnet18.a1_in1k,50,4.5,mean,3458.0,,38.3,15.93,22.37,0.31,41.79,48.47,30.54,1.26,finetune,17.26,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB"
-D3_sharpness,resnet18.a1_in1k,50,4.5,mean,3458.0,,37.73,16.32,21.41,0.32,41.47,50.59,28.34,1.82,finetune,16.26,3.0,"NVIDIA A100-SXM4-40GB 0.27 h (GPU shared by 4 runs), peak 1.8 GB"
-D4_gray_sharpness,resnet18.a1_in1k,50,4.5,mean,3458.0,,37.77,15.98,21.79,0.31,39.17,49.09,30.71,1.36,finetune,17.76,3.0,"NVIDIA A100-SXM4-40GB 0.27 h (GPU shared by 4 runs), peak 1.8 GB"
-D5_k8,resnet18.a1_in1k,50,4.5,mean,3458.0,,37.52,15.68,21.84,0.32,45.3,47.65,27.03,2.4,finetune,14.9,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB"
-D6_k32,resnet18.a1_in1k,50,4.5,mean,3458.0,,37.02,14.87,22.15,0.31,40.71,46.14,29.7,1.47,finetune,15.29,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB"
-D8_layer4_only,resnet18.a1_in1k,50,4.5,mean,3458.0,,40.08,15.1,24.98,0.32,46.61,49.8,30.63,0.52,finetune,15.06,3.0,"NVIDIA A100-SXM4-40GB 0.11 h (GPU shared by 4 runs), peak 1.5 GB"
-D7_no_H038,resnet18.a1_in1k,50,4.5,mean,3458.0,,36.54,15.56,20.99,0.32,35.53,50.62,29.51,1.38,finetune,16.3,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 1.8 GB"
+name,backbone,tile_mm,work_ppm,agg,train_tiles,alpha_median,emd,emd_fine_part,emd_coarse_part,D50_log_err,emd_fine,emd_sand,emd_gravel,emd_std_repeats,approach,emd_std_folds,repeats,compute,public_lb
+T1_base,resnet50.a1_in1k,50.0,4.5,mean,3458.0,1000.0,43.46,16.06,27.41,0.36,57.65,52.85,29.31,2.79,frozen+ridge,14.42,3.0,cpu ridge 36s (features cached),
+T2_tile20,resnet50.a1_in1k,20.0,4.5,mean,18944.0,10000.0,43.77,14.86,28.9,0.36,57.77,50.6,31.12,3.11,frozen+ridge,12.68,3.0,cpu ridge 66s (features cached),
+T3_ppm2.25,resnet50.a1_in1k,50.0,2.25,mean,3458.0,10000.0,43.21,16.17,27.05,0.35,57.93,50.23,30.02,3.14,frozen+ridge,16.1,3.0,cpu ridge 33s (features cached),
+T4_median,resnet50.a1_in1k,50.0,4.5,median,3458.0,1000.0,42.85,15.78,27.07,0.36,57.43,52.62,28.24,2.82,frozen+ridge,14.66,3.0,cpu ridge 33s (features cached),
+S1_dinov2_frozen,vit_small_patch14_dinov2.lvd142m,50.0,4.5,mean,3458.0,1000.0,44.75,16.32,28.43,0.36,65.27,49.38,29.18,3.26,frozen+ridge,16.68,3.0,cpu ridge 4s (features cached),
+S1_mae_frozen,vit_base_patch16_224.mae,50.0,4.5,mean,3458.0,10000.0,38.32,14.87,23.45,0.32,49.53,47.32,26.28,2.13,frozen+ridge,14.67,3.0,cpu ridge 6s (features cached),
+C1_resnet18_ft,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,42.85,16.95,25.9,0.38,53.63,52.41,30.77,2.56,finetune,18.22,3.0,"Tesla T4 0.06 h (fold training time; peak memory not recorded) + Tesla T4 0.11 h, peak 0.6 GB",
+C2_resnet18_bn_train,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,42.87,16.1,26.77,0.37,51.6,55.18,30.6,2.46,finetune,16.42,3.0,"Tesla T4 0.05 h (fold training time; peak memory not recorded) + Tesla T4 0.10 h, peak 0.6 GB",
+C3_resnet18_sgd,resnet18.a1_in1k,50.0,4.5,mean,,,,,,1.17,,,,,finetune,25.48,1.0,Tesla T4 0.05 h (fold training time; peak memory not recorded),
+V3_deit_small_no_llrd,deit_small_patch16_224.fb_in1k,50.0,4.5,mean,3458.0,,46.33,18.34,27.99,0.42,63.74,54.97,30.54,3.43,finetune,18.4,3.0,"Tesla T4 0.14 h (fold training time; peak memory not recorded) + Tesla T4 0.25 h, peak 1.4 GB",
+V2_deit_small_ft,deit_small_patch16_224.fb_in1k,50.0,4.5,mean,3458.0,,46.16,18.63,27.53,0.42,63.09,54.86,30.64,2.83,finetune,19.15,3.0,"Tesla T4 0.14 h (fold training time; peak memory not recorded) + Tesla T4 0.25 h, peak 1.4 GB",
+S2_dinov2_ft,vit_small_patch14_dinov2.lvd142m,50.0,4.5,mean,3458.0,,43.35,17.25,26.1,0.37,51.63,54.4,32.05,2.53,finetune,17.83,3.0,"Tesla T4 0.19 h (fold training time; peak memory not recorded) + Tesla T4 0.33 h, peak 1.9 GB",
+S3_dinov2_lpft,vit_small_patch14_dinov2.lvd142m,50.0,4.5,mean,,,93.18,22.38,70.8,0.83,131.63,90.35,70.26,0.0,finetune,41.5,1.0,Tesla T4 0.20 h (fold training time; peak memory not recorded),
+C4_convnext_tiny_ft,convnext_tiny.fb_in22k_ft_in1k,50.0,4.5,mean,3458.0,,46.99,18.38,28.61,0.42,64.15,55.4,31.48,2.83,finetune,18.71,3.0,"Tesla T4 0.22 h (fold training time; peak memory not recorded) + Tesla T4 0.39 h, peak 2.4 GB",
+V1_vit_small_scratch,deit_small_patch16_224.fb_in1k,50.0,4.5,mean,3458.0,,37.69,14.8,22.9,0.33,39.69,49.36,30.05,1.74,finetune,15.74,3.0,"Tesla T4 0.52 h (fold training time; peak memory not recorded) + Tesla T4 0.91 h, peak 1.4 GB",
+S3b_dinov2_lpft,vit_small_patch14_dinov2.lvd142m,50.0,4.5,mean,3458.0,,43.67,17.48,26.19,0.38,52.0,55.2,32.08,2.84,finetune,17.95,3.0,"Tesla T4 0.56 h, peak 1.9 GB",
+C3b_resnet18_sgd_lr1e-3,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,47.83,17.37,30.46,0.42,51.84,59.08,39.15,7.09,finetune,24.91,3.0,"Tesla T4 0.16 h, peak 0.6 GB",
+C3c_resnet18_sgd_lr1e-4,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,39.63,15.69,23.93,0.34,43.08,52.91,30.18,2.42,finetune,16.53,3.0,"Tesla T4 0.16 h, peak 0.6 GB",
+B_resnet18_lr1e-4,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,40.44,16.64,23.8,0.35,43.7,50.51,32.88,0.0,finetune,17.32,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB",
+B_resnet18_lr3e-4,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,39.72,17.14,22.59,0.35,43.59,53.87,29.54,0.0,finetune,18.07,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB",
+B_resnet50_lr1e-4,resnet50.a1_in1k,50.0,4.5,mean,3458.0,,39.76,17.27,22.49,0.36,40.16,52.62,32.49,0.0,finetune,17.31,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB",
+B_resnet50_lr3e-4,resnet50.a1_in1k,50.0,4.5,mean,3458.0,,37.49,17.08,20.41,0.34,35.94,51.53,30.82,0.0,finetune,20.82,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB",
+B_effnet_b0_lr1e-4,tf_efficientnet_b0.in1k,50.0,4.5,mean,3458.0,,37.73,17.52,20.21,0.36,44.44,50.44,26.53,0.0,finetune,17.87,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB",
+B_effnet_b0_lr3e-4,tf_efficientnet_b0.in1k,50.0,4.5,mean,3458.0,,40.24,18.1,22.14,0.37,53.1,50.99,26.2,0.0,finetune,18.97,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB",
+B_convnext_t_lr1e-4,convnext_tiny.fb_in22k_ft_in1k,50.0,4.5,mean,3458.0,,38.03,17.4,20.63,0.35,49.75,45.72,26.38,0.0,finetune,18.41,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB",
+B_convnext_t_lr3e-4,convnext_tiny.fb_in22k_ft_in1k,50.0,4.5,mean,3458.0,,41.41,17.61,23.79,0.38,67.47,46.39,22.11,0.0,finetune,19.69,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB",
+B_convnext_t_dinov3_lr1e-4,convnext_tiny.dinov3_lvd1689m,50.0,4.5,mean,3458.0,,46.74,16.33,30.41,0.44,44.04,53.55,44.74,0.0,finetune,22.49,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB",
+B_convnext_t_dinov3_lr3e-4,convnext_tiny.dinov3_lvd1689m,50.0,4.5,mean,3458.0,,130.52,49.84,80.68,1.13,127.27,101.98,148.15,0.0,finetune,64.59,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 4.3 GB",
+B_resnet18_micronet_lr1e-4,resnet18,50.0,4.5,mean,3458.0,,39.59,17.37,22.22,0.36,44.66,53.28,28.9,0.0,finetune,17.43,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB",
+B_resnet18_micronet_lr3e-4,resnet18,50.0,4.5,mean,3458.0,,37.54,17.95,19.59,0.35,41.84,52.23,26.79,0.0,finetune,18.31,1.0,"NVIDIA A100-SXM4-40GB 0.02 h, peak 1.0 GB",
+B_resnet50_micronet_lr1e-4,resnet50,50.0,4.5,mean,3458.0,,40.28,16.76,23.52,0.36,42.32,52.4,32.37,0.0,finetune,18.6,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB",
+B_resnet50_micronet_lr3e-4,resnet50,50.0,4.5,mean,3458.0,,37.63,15.08,22.55,0.32,39.0,46.11,32.13,0.0,finetune,16.46,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 3.1 GB",
+B_effnet_b0_micronet_lr1e-4,tf_efficientnet_b0,50.0,4.5,mean,3458.0,,41.41,18.98,22.43,0.37,52.21,50.01,29.85,0.0,finetune,19.78,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB",
+B_effnet_b0_micronet_lr3e-4,tf_efficientnet_b0,50.0,4.5,mean,3458.0,,40.49,18.41,22.08,0.35,47.88,49.69,30.76,0.0,finetune,18.47,1.0,"NVIDIA A100-SXM4-40GB 0.04 h, peak 2.8 GB",
+O2_sgd_lr1e-4,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,41.83,17.02,24.81,0.35,47.73,54.58,31.11,3.67,finetune,17.1,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 0.9 GB",
+O3_no_warmup,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,43.36,18.58,24.78,0.38,52.88,53.91,31.54,3.96,finetune,17.78,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 1.0 GB",
+O1_sgd_lr1e-3,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,106.59,30.31,76.27,0.97,92.75,74.76,132.75,16.66,finetune,40.8,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 0.9 GB",
+O0_base,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,42.74,18.28,24.46,0.37,50.85,53.7,31.6,3.06,finetune,17.4,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 1.0 GB",
+O6_bn_train,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,41.24,17.48,23.76,0.34,44.76,55.92,31.0,1.37,finetune,16.59,3.0,"NVIDIA A100-SXM4-40GB 0.14 h (GPU shared by 4 runs), peak 1.0 GB",
+O4_warmup3,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,43.76,18.47,25.29,0.38,53.15,53.07,32.71,3.06,finetune,17.92,3.0,"NVIDIA A100-SXM4-40GB 0.14 h (GPU shared by 4 runs), peak 1.0 GB",
+O7_groupnorm,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,38.35,16.09,22.26,0.32,44.26,50.06,28.2,2.92,finetune,16.16,3.0,"NVIDIA A100-SXM4-40GB 0.15 h (GPU shared by 4 runs), peak 1.8 GB",
+O8_layer4_only,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,41.63,18.59,23.05,0.37,47.27,53.64,31.5,2.03,finetune,18.59,3.0,"NVIDIA A100-SXM4-40GB 0.06 h (GPU shared by 4 runs), peak 0.6 GB",
+O5_epochs20,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,44.28,19.34,24.94,0.4,61.26,52.96,28.74,2.48,finetune,17.61,3.0,"NVIDIA A100-SXM4-40GB 0.22 h (GPU shared by 4 runs), peak 1.0 GB",
+D2_colour_strong,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,37.79,16.04,21.75,0.32,40.95,47.92,30.26,1.28,finetune,17.65,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB",
+D1_gray,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,38.3,15.93,22.37,0.31,41.79,48.47,30.54,1.26,finetune,17.26,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB",
+D3_sharpness,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,37.73,16.32,21.41,0.32,41.47,50.59,28.34,1.82,finetune,16.26,3.0,"NVIDIA A100-SXM4-40GB 0.27 h (GPU shared by 4 runs), peak 1.8 GB",
+D4_gray_sharpness,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,37.77,15.98,21.79,0.31,39.17,49.09,30.71,1.36,finetune,17.76,3.0,"NVIDIA A100-SXM4-40GB 0.27 h (GPU shared by 4 runs), peak 1.8 GB",
+D5_k8,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,37.52,15.68,21.84,0.32,45.3,47.65,27.03,2.4,finetune,14.9,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB",
+D6_k32,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,37.02,14.87,22.15,0.31,40.71,46.14,29.7,1.47,finetune,15.29,3.0,"NVIDIA A100-SXM4-40GB 0.18 h (GPU shared by 4 runs), peak 1.8 GB",
+D8_layer4_only,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,40.08,15.1,24.98,0.32,46.61,49.8,30.63,0.52,finetune,15.06,3.0,"NVIDIA A100-SXM4-40GB 0.11 h (GPU shared by 4 runs), peak 1.5 GB",
+D7_no_H038,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,36.54,15.56,20.99,0.32,35.53,50.62,29.51,1.38,finetune,16.3,3.0,"NVIDIA A100-SXM4-40GB 0.13 h (GPU shared by 4 runs), peak 1.8 GB",81.18212
+L_D1_M2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,53.29,16.76,36.53,0.48,59.21,51.69,49.75,3.28,finetune,18.71,3.0,"NVIDIA A100-SXM4-40GB 0.09 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D1_M2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,54.84,16.63,38.2,0.5,58.2,52.62,53.7,4.1,finetune,20.09,3.0,"NVIDIA A100-SXM4-40GB 0.09 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D1_S2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,41.73,16.25,25.48,0.35,46.33,48.56,33.59,1.66,finetune,19.63,3.0,"NVIDIA A100-SXM4-40GB 0.11 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D1_S2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,41.89,16.17,25.71,0.34,45.64,46.8,35.69,0.52,finetune,17.21,3.0,"NVIDIA A100-SXM4-40GB 0.11 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D2_M2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,57.2,16.74,40.45,0.52,63.03,54.57,54.41,3.84,finetune,20.34,3.0,"NVIDIA A100-SXM4-40GB 0.08 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D2_M2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,56.55,17.02,39.53,0.51,66.77,53.19,50.84,2.65,finetune,18.19,3.0,"NVIDIA A100-SXM4-40GB 0.08 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D2_S2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,47.58,16.34,31.23,0.42,49.42,49.35,44.96,5.6,finetune,23.2,3.0,"NVIDIA A100-SXM4-40GB 0.10 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D2_S2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,46.34,16.4,29.94,0.4,48.35,47.16,44.24,4.36,finetune,21.12,3.0,"NVIDIA A100-SXM4-40GB 0.10 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D3_M2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,57.03,17.08,39.95,0.53,63.33,55.38,53.23,6.25,finetune,21.54,3.0,"NVIDIA A100-SXM4-40GB 0.10 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D3_M2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,55.67,17.16,38.51,0.52,63.17,55.46,49.98,4.96,finetune,20.12,3.0,"NVIDIA A100-SXM4-40GB 0.10 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D3_S2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,43.67,16.23,27.43,0.38,52.73,48.39,33.47,1.08,finetune,19.8,3.0,"NVIDIA A100-SXM4-40GB 0.12 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D3_S2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,43.76,16.18,27.58,0.37,48.89,49.12,36.21,1.27,finetune,17.08,3.0,"NVIDIA A100-SXM4-40GB 0.12 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D4_M2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,55.71,16.16,39.55,0.51,58.47,54.91,54.09,4.24,finetune,21.38,3.0,"NVIDIA A100-SXM4-40GB 0.09 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D4_M2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,54.32,16.54,37.78,0.48,58.08,55.62,50.54,2.94,finetune,19.43,3.0,"NVIDIA A100-SXM4-40GB 0.09 h (GPU shared by 4 runs), peak 1.8 GB",
+L_O7_M2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,53.51,17.02,36.49,0.48,58.98,53.06,49.55,6.68,finetune,17.85,3.0,"NVIDIA A100-SXM4-40GB 0.07 h (GPU shared by 4 runs), peak 1.8 GB",
+L_O7_M2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,53.6,17.29,36.31,0.48,63.54,51.25,47.43,4.79,finetune,15.48,3.0,"NVIDIA A100-SXM4-40GB 0.07 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D4_S2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,43.82,16.76,27.06,0.38,46.22,49.42,38.22,3.27,finetune,19.36,3.0,"NVIDIA A100-SXM4-40GB 0.14 h (GPU shared by 4 runs), peak 1.8 GB",
+L_D4_S2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,43.79,16.73,27.06,0.37,44.91,49.45,39.14,2.05,finetune,17.06,3.0,"NVIDIA A100-SXM4-40GB 0.14 h (GPU shared by 4 runs), peak 1.8 GB",
+L_O7_S2M,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,40.53,16.19,24.35,0.34,47.16,48.51,30.07,0.89,finetune,19.5,3.0,"NVIDIA A100-SXM4-40GB 0.07 h (GPU shared by 4 runs), peak 1.8 GB",
+L_O7_S2S,resnet18.a1_in1k,50.0,4.5,mean,3458.0,,42.11,16.12,26.0,0.37,47.12,49.07,33.58,1.33,finetune,17.02,3.0,"NVIDIA A100-SXM4-40GB 0.07 h (GPU shared by 4 runs), peak 1.8 GB",
+E1_ensemble,D7_no_H038 + S1_mae_frozen + V7_own_vit_small_augreg_head + T1_base + S1_dinov2_frozen,,,,,,34.28,14.39,19.88,0.3,40.58,47.08,23.28,0.0,ensemble,15.07,1.0,"cpu, seconds (linear programme on OOF curves)",77.92272
