@@ -1,0 +1,32 @@
+agg: mean
+aug:
+  colour: 0.1
+  cutmix_p: 0.0
+  rrc_min_scale: null
+  white_balance: 0.0
+backbone: own_vit
+batch_size: 32
+checkpoint_repeats:
+- 0
+drop_path: 0.1
+epochs: 30
+init: scratch
+layer_decay: null
+loss: emd
+lr: 0.0005
+name: V4_own_vit_tiny_scratch
+repeats:
+- 0
+tile_mm: 50
+tta: true
+vit:
+  depth: 12
+  embed_dim: 192
+  global_pool: avg
+  num_heads: 3
+  patch_size: 16
+  pos_embed_type: learn
+  stem: patch
+warmup_epochs: 3
+weight_decay: 0.05
+work_ppm: 4.5

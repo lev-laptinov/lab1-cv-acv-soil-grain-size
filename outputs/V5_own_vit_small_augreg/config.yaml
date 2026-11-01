@@ -1,0 +1,32 @@
+agg: mean
+aug:
+  colour: 0.1
+  cutmix_p: 0.0
+  rrc_min_scale: null
+  white_balance: 0.0
+backbone: own_vit
+batch_size: 32
+checkpoint_repeats:
+- 0
+drop_path: 0.1
+epochs: 10
+init: vit_small_patch16_224.augreg_in21k_ft_in1k
+layer_decay: 0.75
+loss: emd
+lr: 0.0001
+name: V5_own_vit_small_augreg
+repeats:
+- 0
+tile_mm: 50
+tta: true
+vit:
+  depth: 12
+  embed_dim: 384
+  global_pool: token
+  num_heads: 6
+  patch_size: 16
+  pos_embed_type: learn
+  stem: patch
+warmup_epochs: 1
+weight_decay: 0.05
+work_ppm: 4.5

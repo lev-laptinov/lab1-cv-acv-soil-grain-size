@@ -6,6 +6,7 @@ data/cache/
 outputs/*/*
 !outputs/*/oof.csv
 !outputs/*/test_preds.csv
+!outputs/*/colour_test.csv
 !outputs/*/train_log.csv
 !outputs/*/config.yaml
 .venv/
